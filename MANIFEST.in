@@ -1,0 +1,2 @@
+include src/sample_comic/*
+include src/gutta/builder/templates/*.jinja

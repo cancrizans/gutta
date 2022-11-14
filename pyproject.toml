@@ -1,12 +1,10 @@
 [project]
 name = "gutta"
+version = "0.0.4"
 authors = [{name="cancrizans", email="cancrizans.canon@gmail.com"}]
 readme = "README.md"
-dynamic = ["version"]
 description = "A simple, modular static site builder for webcomics."
 requires-python = ">=3.10"
-
-license = "MIT"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -22,16 +20,19 @@ dependencies = [
     "markdown"
 ]
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [project.urls]
 "Homepage" = "https://github.com/cancrizans/gutta"
 "Bug Tracker" = "https://github.com/cancrizans/gutta/issues"
 
 [project.scripts]
-gutta = "src.gutta.cli:main"
-
-[tool.hatch.version]
-path = "src/gutta/__about__.py"
+gutta = "gutta.cli:main"
