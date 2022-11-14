@@ -16,7 +16,7 @@ def read_yaml(path):
         raise MissingSpecFile(path)
 
 
-SRC = "source"
+SRC = "_source"
 def srcpath(p:str)->str:
     return posixpath.join(SRC,p)
 ROOT_SPECFILE_PATH = srcpath("webcomic.yaml")
@@ -40,7 +40,7 @@ class WCNode:
     def __init__(self,parent,nid:str,config:dict,tree):
         self.tree = tree
         self.nid = nid
-        if not self.nid.isidentifier():
+        if (not self.nid.isidentifier()) or (self.nid[0]=='_'):
             raise NotIdentifier(f"The node id '{self.nid}' is invalid. This is not the title, the node id should be a simple identifier")
         self.parent = parent
         if parent == None:
