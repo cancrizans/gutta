@@ -1,0 +1,23 @@
+# === Sample webcomic.yaml
+# === Edit this file to suit your webcomic ===
+
+# Hierarchy spec
+hierarchy:
+  webcomic:
+    layout: gallery
+  issue:
+    layout: scroll
+  update:
+    layout: scroll
+
+# Contents
+root:
+  title: Sample Webcomic
+  description: "This is a sample webcomic to test out the functionalities of **Gutta**, an open source static site builder for webcomics."
+  children:
+    iss_1:
+      title: Basic Usage
+      description: "Quickstart your gutta website"
+    iss_2:
+      title: Advanced Usage
+      description: "For smart peeps"
