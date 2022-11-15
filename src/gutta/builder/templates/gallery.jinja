@@ -1,13 +1,7 @@
-{% extends "base.jinja" %}
-
-{% block title %}{{title}}{% endblock %}
-
-{% block content %}
-    <h1>{{title}}</h1>
-    <div>
-        {{description}}
-    </div>
-    {% for entry in entries %}
-        <h2><a href="{{entry.base}}">{{entry.title}}</a></h2>
-    {% endfor %}
-{% endblock %}
+<h1>{{title}}</h1>
+<div>
+    {{description}}
+</div>
+{% for entry in entries %}
+    <h2><a href="{{entry.base}}">{{entry.title}}</a></h2>
+{% endfor %}

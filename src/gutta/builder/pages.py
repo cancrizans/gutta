@@ -9,6 +9,7 @@ environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(TEMPLATE_DIR)
     )
 templates = {
+    'base':environment.get_template("base.jinja"),
     'gallery':environment.get_template("gallery.jinja"),
     'scroll':environment.get_template('scroll.jinja')
 }

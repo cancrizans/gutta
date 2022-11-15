@@ -1,2 +1,3 @@
 include src/sample_comic/*
 include src/gutta/builder/templates/*.jinja
+include src/gutta/builder/resources/*.{scss,sass,js}
