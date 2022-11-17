@@ -1,0 +1,9 @@
+{% for pic in pix %}
+    <div>
+        <img loading="lazy" src="{{assets}}{{pic.src}}" width="{{pic.width}}" height="{{pic.height}}">
+    </div>
+{% endfor %}
+
+{% for entry in entries %}
+    {{entry.innerbody}}
+{% endfor %}

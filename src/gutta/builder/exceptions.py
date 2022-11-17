@@ -22,3 +22,12 @@ class NotIdentifier(ParsingError):
 
 class TemplateNotFound(BuildError):
     pass
+
+
+class EmptyTrickle(BuildError):
+    def __init__(self,nid:str,title:str):
+        super().__init__(f"Node {nid} ({title}) is marked as trickle but it has no children.")
+
+class BadPath(ParsingError):
+    def __init__(self,path:str) -> None:
+        super().__init__(f"The following referenced path is malformed: {path}")

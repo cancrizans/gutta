@@ -1,0 +1,11 @@
+
+{% for entry in entries %}
+    <div class="col">
+        <div class="card gutta-gallery-entry">
+            <div class="card-body">
+                <img src="{{assets}}{{entry.thumb.src}}" class="card-img-top" alt="{{entry.description}}">
+                <div class="card-title"><a href="{{sroot}}{{entry.url}}">{{entry.title}}</a></div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

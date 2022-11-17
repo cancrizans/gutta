@@ -5,6 +5,26 @@
     <title>{{full_title}}</title>    
 </head>
 <body>
-    {{body}}
+    <div class="container d-flex flex-column align-items-center gutta-body">
+    {% if navbar is defined %}
+        <nav class="navbar navbar-expand-md sticky-top d-flex flex-row justify-content-around gutta-navbar">
+            
+                {# <a class="navbar-brand" href="{{sroot}}">
+                    <img src="{{assets}}{{navbar.brand_icon}}" height="30" class="d-inline-block align-top" alt="">
+                    {{navbar.brand_text}}
+                </a> #}
+                
+                    {% for entry in navbar.entries %}
+                        <div class="nav-item gutta-navitem">
+                            <a class="nav-link gutta-navlink" href="{{sroot}}{{entry.dest}}">{{entry.label}}</a>
+                        </div>
+                    {% endfor %}
+                
+            
+        </nav>
+    {% endif %}
+    
+        {{body}}
+    </div>
 </body>
 </html>

@@ -1,5 +1,10 @@
-{% for pic in pix %}
+<div>
     <div>
-        <img src="{{assets}}{{pic}}">
+        {{innerbody}}
     </div>
-{% endfor %}
+    {%if navigation_destination is defined %}
+    <div>
+        <a href="{{sroot}}{{navigation_destination.url}}">{{navigation_destination.title}}</a>
+    </div>
+    {% endif %}
+</div>
