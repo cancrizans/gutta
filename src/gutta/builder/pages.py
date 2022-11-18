@@ -14,7 +14,8 @@ templates = {
     'gallery_inner':environment.get_template("gallery_inner.jinja"),
     'scroll':environment.get_template('scroll.jinja'),
     'scroll_inner':environment.get_template('scroll_inner.jinja'),
-    'trickle_inner':environment.get_template('trickle_inner.jinja')
+    'trickle_inner':environment.get_template('trickle_inner.jinja'),
+    'toc_inner':environment.get_template('toc_inner.jinja')
 }
 
 def mdown(src:str)->str:

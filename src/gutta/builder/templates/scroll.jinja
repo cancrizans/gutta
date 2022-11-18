@@ -1,10 +1,18 @@
-<div>
-    <div>
+<div style="width:100%">
+    <div style="width:100%">
         {{innerbody}}
     </div>
-    {%if navigation_destination is defined %}
-    <div>
-        <a href="{{sroot}}{{navigation_destination.url}}">{{navigation_destination.title}}</a>
+    <div class="gutta-navigation d-flex flex-column align-items-center justify-content-center">
+        {%if navigation_destination is defined %}
+        
+            <h3><a href="{{sroot}}{{navigation_destination.url}}">Continue reading: {{navigation_destination.full_title}}</a></h3>
+        
+        {%else%}
+            <h3>You've reached the end of this webcomic - stay tuned for the next episode! <a href="{{sroot}}"> Back Home</a></h3>
+        {% endif %}
     </div>
-    {% endif %}
+
+    <div class="gutta-scrollbuffer"></div>
+
+
 </div>

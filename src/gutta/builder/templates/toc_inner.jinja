@@ -1,0 +1,28 @@
+<ul class="gutta-toc gutta-toc-ul">
+
+{# {% for node in toc recursive %}
+    <li> 
+        <a href="{{sroot}}{{node.url}}">{{node.title}}</a>
+        {% if node.sons %}
+            <ul class="gutta-toc-ul">
+                {{loop(node.sons)}}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %} #}
+
+{% for node in toc recursive %}
+    {% if node.show %}
+        <li> 
+            <a href="{{sroot}}{{node.url}}">{{node.full_title}}</a>
+        </li>
+    {% endif %}
+    {% if node.sons %}
+        
+        {{loop(node.sons)}}
+        
+    {% endif %}
+    
+{% endfor %}
+
+</ul>

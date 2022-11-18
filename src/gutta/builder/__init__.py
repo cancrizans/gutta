@@ -25,3 +25,14 @@ def create_website():
 
     click.echo("Done!")
     return
+
+
+def clean_website():
+    if pathlib.Path('_source/webcomic.yaml').is_file():
+        for item in os.listdir(os.getcwd()):
+            if not item.startswith("_"):
+                print(f"Delete {item}")
+
+        click.echo("Done!")
+    else:
+        click.echo("Can't find webcomic.yaml! Is this even the right folder?",err=True)

@@ -42,3 +42,29 @@ class ImageAsset(Asset):
             'height':self.image_height
             }
         
+import re
+
+pixstring_regex = re.compile(r"(.*)\[(\d+)-(\d+)\](.*)")
+
+
+def parse_pixstring(ps:str)-> list[str]:
+    pix = []
+
+    for c in ps.split(','):
+        c = c.strip()
+        if c=="":
+            continue
+        
+        m = pixstring_regex.match(c)
+        if m:
+            lows = m.group(2)
+            highs = m.group(3)
+            digs = len(lows)
+            low = int(lows)
+            high = int(highs)
+
+            for i in range(low,high+1):
+                pix.append(f"{m.group(1)}{str(i).zfill(digs)}{m.group(4)}")
+        else:
+            pix.append(c)
+    return pix

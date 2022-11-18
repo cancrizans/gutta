@@ -1,6 +1,6 @@
 [project]
 name = "gutta"
-version = "0.0.5"
+
 authors = [{name="cancrizans", email="cancrizans.canon@gmail.com"}]
 readme = "README.md"
 description = "A simple, modular static site builder for webcomics."
@@ -19,11 +19,19 @@ dependencies = [
     "oyaml",
     "markdown",
     "libsass",
-    "imagesize"
+    "imagesize",
+    "numpy",
+    "python-dateutil",
+    "feedgen"
 ]
+
+dynamic = ["version"]
 
 [tool.setuptools]
 include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "gutta.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -38,3 +46,4 @@ build-backend = "setuptools.build_meta"
 
 [project.scripts]
 gutta = "gutta.cli:main"
+

@@ -31,3 +31,21 @@ class EmptyTrickle(BuildError):
 class BadPath(ParsingError):
     def __init__(self,path:str) -> None:
         super().__init__(f"The following referenced path is malformed: {path}")
+
+
+class DatingError(BuildError):
+    pass
+
+
+class NoDates(DatingError):
+    def __init__(self) -> None:
+        super().__init__("There are leaf nodes marked as 'dated' but none of them have a date, so I cannot interpolate.")
+class DateParsingFailure(DatingError):
+    def __init__(self, datestr:str) -> None:
+        super().__init__(f"The following date string could not be parsed as a valid date: '{datestr}'.")
+
+
+
+class UnsupportedFeature(BuildError):
+    def __init__(self, feat:str) -> None:
+        super().__init__(f"Unsupported: {feat}")
