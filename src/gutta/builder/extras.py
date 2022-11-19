@@ -33,7 +33,7 @@ class ExtraPage:
     @cached_property
     def variables(self):
         vars = {}
-        for inh in ['assets','banner','sroot','static','navbar','favicon']:
+        for inh in ['assets','banner','sroot','static','navbar','favicon','gutta']:
             vars[inh]=self.reference_node.variables[inh]
         vars.update({
             'title':self.name,

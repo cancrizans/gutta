@@ -1,15 +1,20 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .wctree import WCTree
 
 import posixpath,pathlib
-
-from .exceptions import MissingOption,NotIdentifier,EmptyTrickle,UnsupportedFeature
+from .exceptions import MissingOption,NotIdentifier,EmptyTrickle,UnsupportedFeature,NoChildDates
 from . import pages
 from functools import cached_property,lru_cache
 from . import assets
 from .specs import getopt
 import datetime
+from . import gutta_info
+
 
 class WCNode:
-    def __init__(self,parent,nid:str,config:dict,tree,index_in_parent:int):
+    def __init__(self,parent : WCNode,nid:str,config:dict,tree : WCTree,index_in_parent:int):
 
         # Basic setup
         self.tree = tree
@@ -25,10 +30,11 @@ class WCNode:
 
         # Parenting and inheritance
         self.parent = parent
+        self.level : int = -1
         if parent == None:
             self.base = ""
             self.level = 0
-            self.siteroot = ""
+            # self.siteroot = ""
             self.full_title = self.short_title
             self.prefix = getopt(config,'prefix',"")
 
@@ -36,7 +42,7 @@ class WCNode:
         else:
             self.base = parent.base + nid + "/"
             self.level = parent.level + 1
-            self.siteroot = parent.siteroot + "/../"
+            # self.siteroot = parent.siteroot + "../"
             self.full_title = " - ".join([x for x in [parent.full_title, self.short_title] if x])
             self.npath = parent.npath+"."+self.nid
 
@@ -45,13 +51,15 @@ class WCNode:
             except MissingOption:
                 self.prefix = parent.prefix
 
+        self.siteroot = '../' * self.level
 
         self.assets_path = self.siteroot + "_assets/"
         self.static_path = self.siteroot + "static/"
 
 
         # Enrich with level data
-        config = list(tree.levels.values())[self.level].enrich(config)
+        hlevel = tree.get_level_by_depth(self.level)
+        config = hlevel.enrich(config)
 
         
         
@@ -73,10 +81,8 @@ class WCNode:
         
         self.pix = [assets.ImageAsset.get(self.asset_pfx(pic)) for pic in pix]
         thumb_path = getopt(config,'thumb',default="")
-        if thumb_path == "":
-            self.thumb = assets.ImageAsset.get("nothumb.png")
-        else:
-            self.thumb = assets.ImageAsset.get(self.asset_pfx(thumb_path))
+        
+        self.thumb = assets.ImageAsset.get(self.asset_pfx(thumb_path))
 
 
         # Children
@@ -93,6 +99,7 @@ class WCNode:
         self.layout = getopt(config,'layout')
         self.mount = getopt(config,'mount', self.layout != "trickle")
         # url is computed on demand and cached... will it work?
+        self.show_date = getopt(config,'show_date',False)
         
         # Navigation
         self.navigation = getopt(config,'nav',False)
@@ -114,7 +121,10 @@ class WCNode:
         
         
     def asset_pfx(self, assetpath:str)->str:
-        return self.prefix+assetpath
+        if assetpath:
+            return self.prefix+assetpath
+        else:
+            return ""
 
     @property
     def nodemap(self)->dict:
@@ -122,6 +132,10 @@ class WCNode:
         for c in self.children:
             nmap.update(c.nodemap)
         return nmap
+
+    @cached_property
+    def _all_children(self)->dict[int,list[WCNode]]:
+        return self.children + [grandchild for child in self.children for grandchild in child._all_children]
 
     @lru_cache
     def resolve(self):
@@ -140,6 +154,10 @@ class WCNode:
         elif not self.mount:
             url = self.parent.url + "#" + self.npath
         return url
+
+    @lru_cache
+    def permalink(self,webroot)->str:
+        return webroot + self.url
 
     @cached_property
     def next_node(self):
@@ -161,16 +179,39 @@ class WCNode:
             stree['sons'] = [son._toc_subtree for son in self.children]
         return stree
 
+    def _date_limit(self, limcall:callable)->datetime.datetime:
+        if self.date:
+            return self.date
+        else:
+            if self.is_leaf:
+                raise NoChildDates(self.nid)
+            return limcall([c.date_low for c in self.children])
+
+
+    @cached_property
+    def date_low(self)->datetime.datetime:
+        return self._date_limit(min)
+    @cached_property
+    def date_high(self)->datetime.datetime:
+        return self._date_limit(max)
+    
+
     @cached_property
     def date_format(self)->str:
         if self.date:
             return self.date.strftime('%d %B, %Y')
         else:
-            return "(no date)"
+            lowfmt = self.date_low.strftime('%B %Y')
+            highfmt = self.date_high.strftime('%B %Y')
+            if lowfmt == highfmt:
+                return lowfmt
+            else:
+                return f"{lowfmt} - {highfmt}"
 
     @cached_property
     def variables(self)->dict:
         variables = {
+            'gutta':gutta_info.gutta_info,
             'title':self.title,    
             'assets':self.assets_path,
             'sroot':self.siteroot,
@@ -178,11 +219,14 @@ class WCNode:
             'full_title':self.full_title,
             'show_title':self.show_title,
             'thumb':self.thumb.vars,
-            'date':self.date_format,
             'head_title':self.tree.webcomic_title + ' - '+self.full_title,
-            'favicon':self.tree.favicon.vars
+            'favicon':self.tree.favicon.vars,
+            'permalink': self.permalink(self.tree.webroot),
+            
         }
 
+        if self.show_date:
+            variables['date'] = self.date_format
         
         if self.description:
             variables['description'] = pages.mdown(self.description)
@@ -191,25 +235,32 @@ class WCNode:
         if self.tree.navbar:
             variables['navbar'] = self.tree.navbar
         if self.layout == 'gallery':
-            variables['entries'] = [
-                {
+            variables['entries'] = []
+            for c in self.children:
+                entry = {
                     'base': c.base,
                     'url': c.url,
                     'title': c.title,
                     'description': c.description,
-                    'thumb': c.thumb.vars
+                    'thumb': c.thumb.vars,
+                    
                 }
-                for c in self.children
-            ]
+                if c.show_date:
+                    entry['date'] = c.date_format
+                variables['entries'].append(entry)
+                
+            
         if self.layout == 'scroll':
             variables['pix'] = [pic.vars for pic in self.pix]
             variables['entries'] = [
-                {
+                
+                 {
                     "innerbody":c.innerbody ,
                     "npath":c.npath
                 }
-                for c in self.children   
-            ]
+               
+                for c in self.children]
+            
             variables['infobox'] = self.infobox
             if self.navigation == "next":
                 next = self.next_node
@@ -221,7 +272,9 @@ class WCNode:
                         'title': next.title,
                         'full_title':next.full_title
                     }
-        
+        # if self.level == 2:
+        #     print(f"==={self.nid}===")
+        #     print(variables)
         return variables
 
 

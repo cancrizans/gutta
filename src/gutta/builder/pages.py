@@ -6,7 +6,9 @@ from .exceptions import TemplateNotFound
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__),'templates')
 
 environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(TEMPLATE_DIR)
+    loader=jinja2.FileSystemLoader(TEMPLATE_DIR),
+    trim_blocks=True,
+    lstrip_blocks=True
     )
 templates = {
     'base':environment.get_template("base.jinja"),

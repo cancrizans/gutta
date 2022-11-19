@@ -1,15 +1,17 @@
 
-{% for entry in entries %}
+{%- for entry in entries -%}
     <div class="col">
         <a href="{{sroot}}{{entry.url}}">
         <div class="card  mb-3 gutta-gallery-entry ">
             <img src="{{assets}}{{entry.thumb.src}}" class="card-img-top" alt="{{entry.description}}">
             <div class="card-body">
                 <h4 class="card-title">{{entry.title}}</h4>
-                <h5 class="card-subtitle mb-2 text-muted">{{entry.subtitle}}</h5>
+                {%- if entry.date is defined -%}
+                <h6 class="card-subtitle mb-2 text-muted">{{entry.date}}</h5>
+                {%- endif -%}
                 <p class="card-text">{{entry.description}}</p>
             </div>
         </div>
         </a>
     </div>
-{% endfor %}
+{%- endfor -%}

@@ -2,7 +2,9 @@
     <div class="gutta-sidebox-container d-none d-lg-block">
         <div class="gutta-sidebox">
             <h5>{{title}}</h5>
-            <span class="text-secondary">{{date}}</span>
+            <span class="text-secondary">{%-if date is defined-%}{{date}}{%-endif-%}
+                <a href="{{permalink}}"><i class="bi-link-45deg"></i></a>
+            </span>
             <p>{{description}}</p>
         </div>
     </div>
@@ -14,7 +16,7 @@
     </div>
 {% endfor %}
 
-{% for entry in entries %}
+{%- for entry in entries -%}
     <div id="{{entry.npath}}" class="gutta-scroll-anchor"></div>
     {{entry.innerbody}}
-{% endfor %}
+{%- endfor -%}

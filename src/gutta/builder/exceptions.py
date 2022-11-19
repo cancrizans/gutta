@@ -17,6 +17,9 @@ class MissingOption(ParsingError):
 
 class NotIdentifier(ParsingError):
     pass
+class UnknownHierarchyLevel(ParsingError):
+    def __init__(self, lvl_name:str) -> None:
+        super().__init__(f"The hierarchy level '{lvl_name}' is referenced, but was not defined in the hierarchy. Maybe it's a typo?")
 
 
 
@@ -43,7 +46,9 @@ class NoDates(DatingError):
 class DateParsingFailure(DatingError):
     def __init__(self, datestr:str) -> None:
         super().__init__(f"The following date string could not be parsed as a valid date: '{datestr}'.")
-
+class NoChildDates(DatingError):
+    def __init__(self, pnid:str) -> None:
+        super().__init__(f"A date was requested to node '{pnid}' which is an undated leaf. This is probably because you've toggled showing dates for parent nodes without dated children.")
 
 
 class UnsupportedFeature(BuildError):

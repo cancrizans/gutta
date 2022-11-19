@@ -19,10 +19,10 @@ You issue commands by typing them in one line in `git-bash` and pressing Enter. 
 
 For example, enter simply the command 
 ```bash
-gutta
+gutta version
 ```
 
-like you did in installation. This runs gutta but doesn't do anything, since you didn't tell it what to do. The program will print back usage information, a list of sub-commands you can give it.
+This will print your gutta installation's version in your terminal.
 
 ## Creating a new webcomic site
 
@@ -52,15 +52,15 @@ Your `mywebsite` folder will not be empty anymore. You will notice two folders i
 
 Don't leave any important stuff in `mywebsite` outside of the `_source` and `_assets` folders, or **it might be deleted or overwritten**. Do not attempt to manually modify any file or folders outside of the `_source` and `_assets` folders, or **your modifications WILL be deleted and overwritten soon**. Anything you want to do you can do from the `_source` and `_assets` folders.
 
-Inside the `_source` folder you will find a `webcomic.yaml` file. This is the most important file, and where you will specify most of the content and layout of the webcomic site. You can learn how to write the `webcomic.yaml` in [Content](content.md). You can also find a couple of `.scss` files; these are used for styling the comic, and you can learn more about that in [Styling](styling.md).
+Inside the `_source` folder you will find a `webcomic.yaml` file. This is the most important file, and where you will specify most of the content and layout of the webcomic site. You can learn how to write the `webcomic.yaml` in [Content](content.md). You can also find a couple of `.scss` files; these are optional and are used for styling the comic, and you can learn more about that in [Styling](styling.md).
 
-Inside the `_assets` folder is where you will locate images (comic pages, banners, buttons, icons, etc...) and other assets for your site to use. Within the `_assets` folder, you can make whatever folder structure you like, put images in any position, orders or names, you are free. You will however need to refer to assets by their position inside `_assets`, so choose an order that works for you.
+Inside the `_assets` folder is where you will locate images (comic pages, banners, buttons, icons, etc...) and other assets for your site to use. See [Assets](assets.md) for guidance.
 
-Before changing anything, try out serving your template webcomic first.
+But before changing anything, let's try out serving your template webcomic first.
 
 ## Serving Webcomic
 
-Open `git-bash` in your `mywebsite` directory. (Remember, always in `mywebsite`, never anywhere else, not in `_source`, not in the parent directory of `mywebsite`, specifically in `mywebsite`.)
+Open `git-bash` in your `mywebsite` directory. (Remember, always in `mywebsite`, never anywhere else, not in `_source`, not in the parent directory of `mywebsite`, not in My Documents, **specifically in `mywebsite`**.)
 
 Type
 
@@ -80,13 +80,13 @@ gutta go
 
 When you are tired, or you've made some modifications to your website (again, **in the `_source` or `_assets` folders only**), you will need to switch off the webserver, so go to the console and press `Ctrl+C`. This stops the webserver and returns you the prompt.
 
-You can then press the up arrow to recover the `gutta go` command, or retype it, and press enter to re-build the website with the changes and restart the webserver. Go to the browser to see your new changes. 
+You can then press the up arrow once to recover the `gutta go` command, or retype it, and press enter to re-build the website with the changes and restart the webserver. Go to the browser to see your new changes. 
 
 And that's it! All you need to do to make your website is add some content, stop and restart `gutta go`, check in your web browser, and then rinse and repeat until it's perfect.
 
-## A warning on web-browser caching
+## Warning: web-browser caching
 
-Most web browsers do something generally useful but in our case annoying, which is caching content. This means that over short times they might display outdated versions of your website even though the webserver is showing them fully updated. This can obviously be extremely confusing. To avoid this you need to learn how to do a "full refresh" or **cache override reload** of a page. Here is how you can do it in major browsers:
+Most web browsers do something generally useful but in our case annoying, which is caching content. This means that over short times they might display outdated versions of your website even though the webserver is serving it fully updated. This can obviously be extremely confusing. To avoid this you need to learn how to do a "full refresh" or **cache override reload** of a page. Here is how you can do it in major browsers:
 
 * Firefox: Shift + click on refresh icon, or press Ctrl+F5, or press Ctrl+Shift+R.
 * Chrome: Ctrl + click on refresh icon, or press Ctrl+F5.

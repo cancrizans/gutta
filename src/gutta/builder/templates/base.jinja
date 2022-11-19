@@ -9,43 +9,35 @@
 </head>
 <body>
     <div class="container d-flex flex-column align-items-center gutta-body">
-        
-        
         {% if banner is defined %}
             <img src="{{assets}}{{banner.src}}" width="100%">
         {% endif %}
         {% if navbar is defined %}
             <nav class="navbar navbar-expand-md sticky-top d-flex flex-row justify-content-around gutta-navbar">
-                
                     {# <a class="navbar-brand" href="{{sroot}}">
                         <img src="{{assets}}{{navbar.brand_icon}}" height="30" class="d-inline-block align-top" alt="">
                         {{navbar.brand_text}}
                     </a> #}
-                    
                         {% for entry in navbar.entries %}
                             <div class="nav-item gutta-navitem">
                                 <a class="nav-link gutta-navlink" href="{{sroot}}{{entry.dest}}">{{entry.label}}</a>
                             </div>
                         {% endfor %}
-                    
-                
             </nav>
         {% endif %}
-
-        
-
         {% if show_title %}
-            <h1>{{full_title}}</h1>
+            <h1 class="gutta-title">{{full_title}}</h1>
         {% endif %}
-
-        
         {% if description is defined %}
         <div class="gutta-description gutta-paragraph">
             {{description}}
         </div>
         {% endif %}
-    
         {{body}}
+
+        <div class="gutta-acknowledgement text-muted">
+            <a href="https://github.com/cancrizans/gutta"><img src="{{static}}gutta_logo24.png"> made with gutta version {{gutta.version}}</a>
+        </div>
     </div>
 </body>
 </html>

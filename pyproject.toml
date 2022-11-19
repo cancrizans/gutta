@@ -22,7 +22,8 @@ dependencies = [
     "imagesize",
     "numpy",
     "python-dateutil",
-    "feedgen"
+    "feedgen",
+    "pytz"
 ]
 
 dynamic = ["version"]

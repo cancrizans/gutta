@@ -7,6 +7,7 @@ import webserver
 
 from __init__ import __version__
 
+
 @click.group('guttacli')
 @click.pass_context
 def cli(ctx):
