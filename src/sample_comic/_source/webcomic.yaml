@@ -7,17 +7,29 @@ hierarchy:
     layout: gallery
   tutorial:
     layout: scroll
+    infobox: yes
 
+title: My brand new gutta website
+favicon: gutta_tutorial/gutta_logo_icon.svg
 
+navbar:
+  menu:
+    Home: gutta.home
+    About: extras.about
+    Get gutta!: href.https://github.com/cancrizans/gutta
+
+extras:
+  about:
+    from: about.md
 
 # Contents
 root:
-  title: Sample Webcomic
+  title: Sample Comic
   description: "This is a sample webcomic to test out the functionalities of **Gutta**, an open source static site builder for webcomics."
   children:
     basic:
       title: Basic Usage
       description: "Quickstart your gutta website"
-    advanced:
-      title: Advanced Usage
-      description: "For smart peeps"
+      prefix: gutta_tutorial/
+      thumb: gutta_logo.png
+      pix: gutta_tutorial[00-03].webp

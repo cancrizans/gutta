@@ -34,7 +34,10 @@ class ExtraPage:
     def variables(self):
         vars = {}
         for inh in ['assets','banner','sroot','static','navbar','favicon','gutta']:
-            vars[inh]=self.reference_node.variables[inh]
+            try:
+                vars[inh]=self.reference_node.variables[inh]
+            except KeyError:
+                pass
         vars.update({
             'title':self.name,
             "show_title":False,

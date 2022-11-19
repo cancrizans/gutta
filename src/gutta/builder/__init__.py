@@ -22,7 +22,7 @@ def create_website():
     to_dir = os.getcwd()
     copy_tree(from_dir,to_dir)
 
-    pathlib.Path('assets').mkdir(exist_ok=True)
+    pathlib.Path('_assets').mkdir(exist_ok=True)
 
     click.echo("Done!")
     return
