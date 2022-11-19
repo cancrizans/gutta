@@ -18,7 +18,7 @@ def create_website():
         return False
     
     click.echo("Assembling template webcomic...")
-    from_dir = os.path.join(os.path.dirname(__file__),'../../sample_comic')
+    from_dir = os.path.join(os.path.dirname(__file__),'../sample_comic')
     to_dir = os.getcwd()
     copy_tree(from_dir,to_dir)
 
