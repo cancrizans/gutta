@@ -14,7 +14,7 @@ class ExtraPage:
         self.layout = getopt(spec,'layout',"")
         self.name = name
     @cached_property
-    def body(self):
+    def innerbody(self):
         if self.from_src:
             frompath=localpaths.srcpath(self.from_src)
             try:
@@ -29,6 +29,9 @@ class ExtraPage:
         else:
             print(f"Build failed for extra page '{self.name}', unknown type")
             return pages.mdown("Unknown extra page type - Build failed")
+    @cached_property
+    def body(self):
+        return pages.render_page('extra',dict(content=self.innerbody))
 
     @cached_property
     def variables(self):

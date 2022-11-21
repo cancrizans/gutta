@@ -4,7 +4,7 @@ if TYPE_CHECKING:
     from .wctree import WCTree
 
 import posixpath,pathlib
-from .exceptions import MissingOption,NotIdentifier,EmptyTrickle,UnsupportedFeature,NoChildDates
+from .exceptions import MissingOption,NotIdentifier,EmptyTrickle,UnsupportedFeature,NoChildDates,BuildError
 from . import pages
 from functools import cached_property,lru_cache
 from . import assets
@@ -12,6 +12,7 @@ from .specs import getopt
 import datetime
 from . import gutta_info
 
+import traceback
 
 class WCNode:
     def __init__(self,parent : WCNode,nid:str,config:dict,tree : WCTree,index_in_parent:int):
@@ -27,41 +28,49 @@ class WCNode:
         self.short_title = getopt(config,'short_title',self.title)
         
 
-
         # Parenting and inheritance
         self.parent = parent
         self.level : int = -1
         if parent == None:
-            self.base = ""
             self.level = 0
-            # self.siteroot = ""
             self.full_title = self.short_title
             self.prefix = getopt(config,'prefix',"")
-
             self.npath = self.nid
         else:
-            self.base = parent.base + nid + "/"
             self.level = parent.level + 1
-            # self.siteroot = parent.siteroot + "../"
             self.full_title = " - ".join([x for x in [parent.full_title, self.short_title] if x])
             self.npath = parent.npath+"."+self.nid
-
             try:
                 self.prefix = getopt(config,'prefix')
             except MissingOption:
                 self.prefix = parent.prefix
 
-        self.siteroot = '../' * self.level
-
-        self.assets_path = self.siteroot + "_assets/"
-        self.static_path = self.siteroot + "static/"
-
-
+        # ===== ENRICHMENT HERE =======
         # Enrich with level data
         hlevel = tree.get_level_by_depth(self.level)
-        config = hlevel.enrich(config)
+        config = hlevel.enrich(config) 
 
+        # Mounting, Layout and URL
+        self.layout = getopt(config,'layout')
+        self.do_mount = getopt(config,'mount', self.layout != "trickle")
+        if self.do_mount:
+            self.recommended_mountpoint = getopt(config,'mountpoint',self.nid if self.parent else '')
+            self.mountpoint = self.tree.mounts.beg(self.recommended_mountpoint)
+            self.base = self.mountpoint.base
+            self.siteroot = self.mountpoint.sroot
+            self.assets_path = self.siteroot + "_assets/"
+            self.static_path = self.siteroot + "static/"
+        else:
+            if self.parent:
+                self.assets_path = self.parent.assets_path
+                self.static_path = self.parent.static_path
+                self.siteroot = self.parent.siteroot
+                
+                self.anchor = self.parent.beg_anchor(self.nid)
+            else:
+                raise BuildError("The root node must be mounted. Make sure 'root' has mount:yes.")
         
+
         
         # Description and text
         self.description = getopt(config,'description',"")
@@ -74,18 +83,15 @@ class WCNode:
         self.list_in_toc = getopt(config,'list_in_toc',True)
         self.infobox = getopt(config,'infobox',False)
 
-
         # Images
 
         pix = assets.parse_pixstring(getopt(config,'pix',""))
-        
         self.pix = [assets.ImageAsset.get(self.asset_pfx(pic)) for pic in pix]
-        thumb_path = getopt(config,'thumb',default="")
-        
+        thumb_path = getopt(config,'thumb',default="")        
         self.thumb = assets.ImageAsset.get(self.asset_pfx(thumb_path))
 
-
         # Children
+        self.anchor_depot : set[str] = set()
         self.children_specs = getopt(config,'children',{})
         self.children = [WCNode(self,key,spec,tree,i) for i,(key,spec) in enumerate(self.children_specs.items())]
         self.is_leaf = len(self.children) == 0
@@ -93,20 +99,13 @@ class WCNode:
             self._subordinate_leaves = [self]
         else:
             self._subordinate_leaves = [leaf for child in self.children for leaf in child._subordinate_leaves]
-
-
-        # Mounting, layout, URL
-        self.layout = getopt(config,'layout')
-        self.mount = getopt(config,'mount', self.layout != "trickle")
-        # url is computed on demand and cached... will it work?
-        self.show_date = getopt(config,'show_date',False)
         
         # Navigation
-        self.navigation = getopt(config,'nav',False)
+        
         self.index_in_parent = index_in_parent
 
-
         # Date
+        self.show_date = getopt(config,'show_date',False)
         self.dated = getopt(config,'dated',False)
         if self.dated:
             
@@ -118,6 +117,23 @@ class WCNode:
                     "instead and the date range will be propagated upwards."))
 
         self.date : datetime.datetime = None # will be parsed/interpolated later.
+
+
+        # opengraph
+        try:
+            self.og_img = assets.ImageAsset.get(self.asset_pfx(getopt(config,'og.img')))
+        except MissingOption:
+            if len(self.pix)>0:
+                self.og_img = self.pix[0]
+            elif self.thumb:
+                self.og_img = self.thumb
+            elif len(self.children)>0:
+                    self.og_img = self.children[0].og_img
+            else:
+                self.og_img = assets.ImageAsset.get('')
+        self.og_title = self.full_title
+        self.og_site_name = self.tree.webcomic_title
+        self.og_description = self.description
         
         
     def asset_pfx(self, assetpath:str)->str:
@@ -138,21 +154,44 @@ class WCNode:
         return self.children + [grandchild for child in self.children for grandchild in child._all_children]
 
     @lru_cache
-    def resolve(self):
-        if self.layout == "trickle":
-            return self.children[0]
+    def _resolve_direction(self,forward:bool):
+        if self.layout == 'trickle':
+            return self.children[0 if forward else -1]
         else:
             return self
+    @lru_cache
+    def resolve(self):
+        return self._resolve_direction(True)
+    @lru_cache
+    def resolve_back(self):
+        return self._resolve_direction(False)
+
+    def beg_anchor(self,recommendation:str):
+        if self.do_mount:
+            if not recommendation in self.anchor_depot:
+                self.anchor_depot.add(recommendation)
+                return recommendation
+            for l in range(200):
+                digited = recommendation + str(l)
+                if not digited in self.anchor_depot:
+                    self.anchor_depot.add(digited)
+                    return digited
+            raise ValueError("Ran out of anchor space??")
+        else:
+            return self.parent.beg_anchor(recommendation)
+
 
     @cached_property
     def url(self)->str:
-        url = self.base
+        url = None
+        if self.do_mount:
+            url = self.base
         if self.layout == 'trickle':
             if len(self.children) == 0:
                 raise EmptyTrickle(self.nid, self.title)
             url = self.resolve().url
-        elif not self.mount:
-            url = self.parent.url + "#" + self.npath
+        elif not self.do_mount:
+            url = self.parent.url + "#" + self.anchor
         return url
 
     @lru_cache
@@ -170,6 +209,16 @@ class WCNode:
             return 'latest'
 
     @cached_property
+    def previous_node(self):
+        if self.parent:
+            if self.index_in_parent == 0:
+                return self.parent.previous_node
+            else:
+                return self.parent.children[self.index_in_parent-1].resolve_back()
+        else:
+            return 'first'
+
+    @cached_property
     def _toc_subtree(self)->dict:
         stree = {'show': self.list_in_toc, 'title': self.title,'full_title':self.full_title, 'url': self.url}
         if self.is_leaf:
@@ -179,21 +228,24 @@ class WCNode:
             stree['sons'] = [son._toc_subtree for son in self.children]
         return stree
 
-    def _date_limit(self, limcall:callable)->datetime.datetime:
+    def _date_limit(self, high:bool)->datetime.datetime:
         if self.date:
             return self.date
         else:
             if self.is_leaf:
                 raise NoChildDates(self.nid)
-            return limcall([c.date_low for c in self.children])
+            if high:
+                return max([c.date_high for c in self.children])
+            else:
+                return min([c.date_low for c in self.children])
 
 
     @cached_property
     def date_low(self)->datetime.datetime:
-        return self._date_limit(min)
+        return self._date_limit(False)
     @cached_property
     def date_high(self)->datetime.datetime:
-        return self._date_limit(max)
+        return self._date_limit(True)
     
 
     @cached_property
@@ -208,6 +260,8 @@ class WCNode:
             else:
                 return f"{lowfmt} - {highfmt}"
 
+
+
     @cached_property
     def variables(self)->dict:
         variables = {
@@ -219,11 +273,24 @@ class WCNode:
             'full_title':self.full_title,
             'show_title':self.show_title,
             'thumb':self.thumb.vars,
-            'head_title':self.tree.webcomic_title + ' - '+self.full_title,
+            'head_title':' - '.join([ x for x in [self.tree.webcomic_title,self.full_title] if x]),
             'favicon':self.tree.favicon.vars,
             'permalink': self.permalink(self.tree.webroot),
             
         }
+
+        if self.do_mount:
+            variables['opengraph'] = dict(
+                title=self.og_title,
+                site_name=self.og_site_name,
+                description=self.og_description,
+                image=dict(
+                    url=self.og_img.absolute_url(self.tree.webroot),
+                    alt=self.og_description,
+                    width=self.og_img.image_width,
+                    height=self.og_img.image_height
+                )
+            )
 
         if self.show_date:
             variables['date'] = self.date_format
@@ -238,7 +305,6 @@ class WCNode:
             variables['entries'] = []
             for c in self.children:
                 entry = {
-                    'base': c.base,
                     'url': c.url,
                     'title': c.title,
                     'description': c.description,
@@ -256,22 +322,34 @@ class WCNode:
                 
                  {
                     "innerbody":c.innerbody ,
-                    "npath":c.npath
+                    "anchor":c.anchor
                 }
                
                 for c in self.children]
             
             variables['infobox'] = self.infobox
-            if self.navigation == "next":
-                next = self.next_node
-                if next == 'latest':
-                    variables['is_latest'] = True
-                else:
-                    variables['navigation_destination'] = {
-                        'url': next.url,
-                        'title': next.title,
-                        'full_title':next.full_title
-                    }
+            variables['spinner'] = self.tree.spinner.vars
+            
+            next = self.next_node
+            if next == 'latest':
+                variables['is_latest'] = True
+            else:
+                variables['navigation_destination'] = {
+                    'url': next.url,
+                    'title': next.title,
+                    'full_title':next.full_title
+                }
+
+            prev = self.previous_node
+            if prev == 'first':
+                variables['is_first'] = True
+            else:
+                variables['back_destination'] = {
+                    'url': prev.url,
+                    'title': prev.title,
+                    'full_title':prev.full_title
+                }
+
         # if self.level == 2:
         #     print(f"==={self.nid}===")
         #     print(variables)
@@ -299,12 +377,18 @@ class WCNode:
         return pages.render_page(self.layout + "_inner", self.variables)
 
     def build(self):
-        dir = self.base
-        pathlib.Path(dir).mkdir(exist_ok=True)
         for child in self.children:
             child.build()
         
-        if self.mount:
+        if self.do_mount:
+            try:
+                page = self.page
+            except Exception as e:
+                print(f"Error while building node '{self.npath}'")
+                traceback.print_exc()
+
+            dir = self.base
+            pathlib.Path(dir).mkdir(exist_ok=True)
             page_path = posixpath.join(dir,'index.html')
             with open(page_path,'w') as f:
                 f.write(self.page)

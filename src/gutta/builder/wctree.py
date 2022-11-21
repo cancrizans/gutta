@@ -1,13 +1,16 @@
 
 import pathlib
+import json
+from functools import cached_property,lru_cache
+
 from . import style,resources,assets,localpaths,dates
 from .wcnode import WCNode
 from .extras import ExtraPage
 from .specs import read_yaml,getopt
 from .feeds import Feed
 from .exceptions import UnknownHierarchyLevel
-from functools import cached_property,lru_cache
-from . import resources
+from .mountpoints import MountDepot
+
 
 
 class HierarchyLevel:
@@ -24,6 +27,11 @@ class WCTree:
         self.webcomic_title = getopt(config,'title',"My Webcomic")
         favicon_src = getopt(config,'favicon','favicon.ico')
         self.favicon = assets.ImageAsset.get(favicon_src)
+        spinner_src = getopt(config,'loading_spinner','')
+        self.spinner = assets.ImageAsset.get(spinner_src)
+
+
+        self.mounts = MountDepot()
 
         hierarchy_spec : dict = getopt(config,'hierarchy')
         self.levels = {hid:HierarchyLevel(spec) for hid,spec in hierarchy_spec.items()}
@@ -128,6 +136,13 @@ class WCTree:
             f.write(compiled_css)
 
 
+    def dump_debug(self):
+        debugs = {}
+        for node in self.all_nodes:
+            debugs[node.npath] = node.variables
+        with open('.debug_variables.json','w') as f:
+            f.write(json.dumps(debugs)) 
+
 
     def build(self):
         pathlib.Path('.nojekyll').touch()
@@ -140,3 +155,5 @@ class WCTree:
         [ex.build() for ex in self.extra_pages]
         if self.create_feeds:
             self.feed.build()
+
+        self.dump_debug()

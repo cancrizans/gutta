@@ -2,6 +2,7 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
 
 $site-max-width: 940px !default;
+$extra-page-max-width: 700px !default;
 
 $sidebox-width: 300px !default;
 
@@ -63,9 +64,14 @@ a:hover {
     background-color: $color-galleryentry-bg;
 }
 
-.gutta-navigation {
+.gutta-next {
     width: 100%;
     padding: 3em;
+}
+
+.gutta-previous {
+    width:100%;
+    padding:1em;
 }
 
 .gutta-scrollbuffer{
@@ -130,4 +136,13 @@ a:hover {
     padding-top: 3em;
     padding-bottom: 3em;
     text-align: center;
+}
+
+.gutta-extra {
+    padding-top: 3em;
+    padding-bottom: 3em;
+    padding-left: 1em;
+    padding-right: 1em;
+
+    max-width: $extra-page-max-width;
 }

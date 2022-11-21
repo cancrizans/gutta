@@ -24,6 +24,12 @@ class Asset:
             if not os.path.isfile(self.local_path):
                 echo(f"Warning: asset {self.path} was referenced but not found.")
     
+    def absolute_url(self,webroot:str):
+        return webroot+'_assets/'+self.path
+
+    def __bool__(self):
+        return self.path != ''
+    
 class ImageAsset(Asset):
     def __init__(self, path: str):
         super().__init__(path)

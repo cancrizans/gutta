@@ -1,8 +1,13 @@
 <div style="width:100%">
+    {%if back_destination is defined %}
+    <div class="gutta-previous d-flex flex-column align-items-center justify-content-center">
+            <span><a href="{{sroot}}{{back_destination.url}}">Go back to {{back_destination.full_title}}</a></span>
+    </div>
+    {% endif %}
     <div style="width:100%">
         {{innerbody}}
     </div>
-    <div class="gutta-navigation d-flex flex-column align-items-center justify-content-center">
+    <div class="gutta-next d-flex flex-column align-items-center justify-content-center">
         {%if navigation_destination is defined %}
         
             <h3><a href="{{sroot}}{{navigation_destination.url}}">Continue reading: {{navigation_destination.full_title}}</a></h3>
