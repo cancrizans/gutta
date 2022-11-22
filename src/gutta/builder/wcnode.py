@@ -65,11 +65,14 @@ class WCNode:
                 self.assets_path = self.parent.assets_path
                 self.static_path = self.parent.static_path
                 self.siteroot = self.parent.siteroot
-                
-                self.anchor = self.parent.beg_anchor(self.nid)
             else:
                 raise BuildError("The root node must be mounted. Make sure 'root' has mount:yes.")
         
+        if (not self.do_mount) or self.do_mount == 'redirect':
+            if self.parent:
+                self.anchor = self.parent.beg_anchor(self.nid)
+            else:
+                raise BuildError(f"The root node's 'mount' field is '{self.do_mount}'. The root node must have mount:yes.")
 
         
         # Description and text
@@ -133,7 +136,7 @@ class WCNode:
                 self.og_img = assets.ImageAsset.get('')
         self.og_title = self.full_title
         self.og_site_name = self.tree.webcomic_title
-        self.og_description = self.description
+        self.og_description = self.description if self.description else 'Webcomics!'
         
         
     def asset_pfx(self, assetpath:str)->str:
@@ -182,6 +185,10 @@ class WCNode:
 
 
     @cached_property
+    def unmounted_url(self)->str:
+        return self.parent.url + "#" + self.anchor
+
+    @cached_property
     def url(self)->str:
         url = None
         if self.do_mount:
@@ -191,7 +198,7 @@ class WCNode:
                 raise EmptyTrickle(self.nid, self.title)
             url = self.resolve().url
         elif not self.do_mount:
-            url = self.parent.url + "#" + self.anchor
+            url = self.unmounted_url
         return url
 
     @lru_cache
@@ -364,9 +371,18 @@ class WCNode:
 
     @lru_cache
     def render_page(self,body:str)->str:
-        vars =  {'body':body}
-        vars.update(self.variables)
-        return pages.render_page('base',vars)
+        if self.do_mount is True:
+            vars =  {'body':body}
+            vars.update(self.variables)
+            return pages.render_page('base',vars)
+        elif self.do_mount == 'redirect':
+            vars = dict(redirect=self.siteroot+self.unmounted_url)
+            vars.update(self.variables)
+            return pages.render_page('redirect',vars)
+        elif not self.do_mount:
+            raise ValueError(".render_page called on an unmounted node?")
+        else:
+            raise BuildError(f"Unknown 'mount' value '{self.do_mount}'.")
 
     @cached_property
     def page(self)->str:
@@ -382,7 +398,7 @@ class WCNode:
         
         if self.do_mount:
             try:
-                page = self.page
+                self.page
             except Exception as e:
                 print(f"Error while building node '{self.npath}'")
                 traceback.print_exc()

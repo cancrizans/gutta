@@ -18,7 +18,8 @@ templates = {
     'scroll_inner':environment.get_template('scroll_inner.jinja'),
     'trickle_inner':environment.get_template('trickle_inner.jinja'),
     'toc_inner':environment.get_template('toc_inner.jinja'),
-    'extra':environment.get_template('extra.jinja')
+    'extra':environment.get_template('extra.jinja'),
+    'redirect':environment.get_template('redirect.jinja')
 }
 
 def mdown(src:str)->str:
