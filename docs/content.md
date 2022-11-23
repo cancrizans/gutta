@@ -130,6 +130,18 @@ If present, RSS and Atom feeds will automatically be generated. These will be lo
 | --- | --- | --- |
 | `entries` | yes | Specifies which named level of the hierarchy is used as entries in the feed. |
 
+## google.analytics
+
+```yaml
+google.analytics:
+  tracking_id: ...
+```
+
+If present, Google Analytics tag will be included in all pages (including redirects before the redirect code).
+
+| Sub-option | Required | Description |
+| --- | --- | --- |
+| `tracking_id` | yes | Tracking ID provided by Google Analytics |
 
 ## hierarchy
 
