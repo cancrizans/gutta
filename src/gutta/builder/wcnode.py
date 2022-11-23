@@ -93,6 +93,19 @@ class WCNode:
         thumb_path = getopt(config,'thumb',default="")        
         self.thumb = assets.ImageAsset.get(self.asset_pfx(thumb_path))
 
+        try:
+            self.feed_img = assets.ImageAsset.get(self.asset_pfx(getopt(config,'feed.img')))
+        except MissingOption:
+            if self.thumb:
+                self.feed_img = self.thumb
+            elif len(self.pix)>0:
+                self.feed_img = self.pix[0]
+            else:
+                self.feed_img = None
+        
+        
+
+
         # Children
         self.anchor_depot : set[str] = set()
         self.children_specs = getopt(config,'children',{})
@@ -285,6 +298,8 @@ class WCNode:
             'permalink': self.permalink(self.tree.webroot),
             
         }
+        if self.tree.ganalytics:
+            variables['ganalytics'] = self.tree.ganalytics
 
         if self.do_mount:
             variables['opengraph'] = dict(

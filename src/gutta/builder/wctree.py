@@ -75,6 +75,11 @@ class WCTree:
 
             self.feed = Feed(self.feed_entries,self.webroot,{'title':self.webcomic_title,'description':self.root.description})
 
+        self.ganalytics = getopt(config,'google.analytics',False)
+        if self.ganalytics:
+            self.ganalytics_id = getopt(self.ganalytics,'tracking_id')
+        
+
     @lru_cache
     def get_level_by_depth(self,depth:int)-> HierarchyLevel:
         return list(self.levels.values())[depth]

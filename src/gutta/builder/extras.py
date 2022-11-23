@@ -36,7 +36,7 @@ class ExtraPage:
     @cached_property
     def variables(self):
         vars = {}
-        for inh in ['assets','banner','sroot','static','navbar','favicon','gutta']:
+        for inh in ['assets','banner','sroot','static','navbar','favicon','gutta','ganalytics']:
             try:
                 vars[inh]=self.reference_node.variables[inh]
             except KeyError:

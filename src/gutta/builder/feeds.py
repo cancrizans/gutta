@@ -14,7 +14,7 @@ class Feed:
         fg = FeedGenerator()
         fg.title(self.metadata['title'])
         fg.description(self.metadata['description'])
-        fg.link(dict(href=self.webroot))
+        fg.link(dict(href=self.webroot,rel='alternate'))
         fg.id(self.webroot)
 
         for entry in self.entries:
@@ -22,9 +22,11 @@ class Feed:
             permalink = entry.permalink(self.webroot)
             fe.id(permalink)
             fe.title(entry.full_title)
-            fe.link(dict(href=permalink))
-            fe.description(entry.description)
-        
+            fe.link(dict(href=permalink,rel='alternate'))
+
+            pic = entry.feed_img
+            desc = f"<img src='{pic.absolute_url(self.webroot)}' width='{pic.image_width}' height='{pic.image_height}' alt='{entry.full_title}'></hr>{entry.description}"
+            fe.description(desc)
             fe.published(pytz.utc.localize(entry.date))
         
         
