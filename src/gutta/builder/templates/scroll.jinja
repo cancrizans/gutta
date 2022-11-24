@@ -1,10 +1,10 @@
-<div style="width:100%">
+<div class="gutta-scroll-subpage">
     {%if back_destination is defined %}
     <div class="gutta-previous d-flex flex-column align-items-center justify-content-center">
             <span><a href="{{sroot}}{{back_destination.url}}">Go back to {{back_destination.full_title}}</a></span>
     </div>
     {% endif %}
-    <div style="width:100%">
+    <div style="gutta-scroll-content-container">
         {{innerbody}}
     </div>
     <div class="gutta-next d-flex flex-column align-items-center justify-content-center">

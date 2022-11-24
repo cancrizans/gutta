@@ -339,6 +339,7 @@ class WCNode:
                     'url': c.url,
                     'title': c.title,
                     'description': c.description.html,
+                    'description_plain' : c.description.plaintext,
                     'thumb': c.thumb.vars,
                     
                 }

@@ -24,6 +24,7 @@ $color-navlinks-hover: $color-links-hover !default;
 
 $color-galleryentry-bg: rgb(173, 171, 162) !default;
 
+$color-scrollcontent-bg: transparent !default;
 
 body {
     background-color: $color-bg;
@@ -145,4 +146,14 @@ a:hover {
     padding-right: 1em;
 
     max-width: $extra-page-max-width;
+}
+
+.gutta-scroll-subpage{
+    width:100%;
+
+}
+
+.gutta-scroll-content-container{
+    width: 100%;
+    background-color: $color-scrollcontent-bg;
 }
