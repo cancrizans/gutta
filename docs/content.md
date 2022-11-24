@@ -1,10 +1,56 @@
 # How do I into `webcomic.yaml`?
 
-*wip*
+To tell gutta how your comic is laid out, you need to edit your `webcomic.yaml` file contained in the `_source` folder. This file is written in (a simplified version of) the YAML language, and requires you describe your comic in a certain way. This guide will teach you what you need:
+
+* How to write YAML
+* How to structure your webcomic in general
+* Quickstart to get a basic working file up
+* Reference for all available options
 
 ## YAML 101
 
-*wip*
+YAML is already a very easy language, but we'll make it even easier by only using a fraction of its functionalities. 
+
+First of all, a YAML file (extension `.yaml`) is a simple text file. You can edit it with notepad, but it's a bit more comfortable to use something more suited - for beginners I recommend [Notepad++](https://notepad-plus-plus.org/) or [Sublime Text](https://www.sublimetext.com/).
+
+At heart the YAML file will simply have a bunch of lines like this
+
+```yaml
+key1: First value bla bla bla
+
+key2: Second value bla bla bla
+key3: Third value bla bla bla
+
+# lines starting with a hash sign are comments and are ignored. As are empty lines
+
+key4: Fourth value # I can also add a comment after a line.
+
+...
+```
+
+The key can be any identifying phrase, but for us we will prefer to use as keys a lowercase phrase with no spaces or special characters, using underscores to separate words if we need, not starting with a number. For example `webroot`, `list_in_toc`, `prologue2` are all good keys, while `Chapter2`, `4chan`, `Merry Christmas` are kind of a bad idea and/or may not work.
+
+The values instead can just be any regular text. Sometimes it's necessary to put something very specific, for example `yes` or `no`, or a specific value for an option.
+
+The space after the `:` and before the value is necessary in YAML, so make sure you leave it (your editor will let you know).
+
+That's not all: in addition, the value itself can be another "object" with more keys of its own, like if our YAML had a property that was itself a smaller YAML. To show that we are inside this "object" we must indent using the Tab key:
+
+```yaml
+# we're assigning options to the main object now
+key1: value1
+key2: value2
+key3: value3
+
+key4:
+#v note the indent
+  subkey: subvalue    
+  another_subkey: subvalue2
+  # I'm in the sub-object still so everything gets assigned to it
+  yet_another_subkey: subvalue3 bla bla bla
+
+key5: value5  # I'm back to regular indent so this is on the main object again.
+```
 
 ## The Tree
 
