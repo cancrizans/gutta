@@ -2,6 +2,7 @@
 
 from .exceptions import MissingSpecFile
 from . import pages
+from .blobs import Blob
 from functools import cached_property
 from . import localpaths
 from .wcnode import WCNode
@@ -23,7 +24,7 @@ class ExtraPage:
             except FileNotFoundError:
                 raise MissingSpecFile(frompath)
             
-            return pages.mdown(source)
+            return Blob(source).html
         elif self.layout == "toc":
             return pages.render_page("toc_inner",{'toc':[self.reference_node._toc_subtree]})
         else:

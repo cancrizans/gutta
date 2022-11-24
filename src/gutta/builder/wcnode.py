@@ -11,6 +11,7 @@ from . import assets
 from .specs import getopt
 import datetime
 from . import gutta_info
+from .blobs import Blob
 
 import traceback
 
@@ -76,7 +77,7 @@ class WCNode:
 
         
         # Description and text
-        self.description = getopt(config,'description',"")
+        self.description = Blob(getopt(config,'description',""))
         banner_path = getopt(config,'banner',"")
         self.banner = None
         if banner_path:
@@ -103,6 +104,16 @@ class WCNode:
             else:
                 self.feed_img = None
         
+        # Opengraph inherit
+
+        self.og_title = self.full_title
+        self.og_site_name = self.tree.webcomic_title
+        
+        self.og_description = Blob('Webcomics!')
+        if self.description:
+            self.og_description = self.description
+        elif (self.parent) and self.parent.description:
+            self.og_description = self.parent.description
         
 
 
@@ -135,7 +146,7 @@ class WCNode:
         self.date : datetime.datetime = None # will be parsed/interpolated later.
 
 
-        # opengraph
+        # Opengraph backflow
         try:
             self.og_img = assets.ImageAsset.get(self.asset_pfx(getopt(config,'og.img')))
         except MissingOption:
@@ -147,9 +158,7 @@ class WCNode:
                     self.og_img = self.children[0].og_img
             else:
                 self.og_img = assets.ImageAsset.get('')
-        self.og_title = self.full_title
-        self.og_site_name = self.tree.webcomic_title
-        self.og_description = self.description if self.description else 'Webcomics!'
+        
         
         
     def asset_pfx(self, assetpath:str)->str:
@@ -305,10 +314,10 @@ class WCNode:
             variables['opengraph'] = dict(
                 title=self.og_title,
                 site_name=self.og_site_name,
-                description=self.og_description,
+                description=self.og_description.plaintext,
                 image=dict(
                     url=self.og_img.absolute_url(self.tree.webroot),
-                    alt=self.og_description,
+                    alt=self.og_description.plaintext,
                     width=self.og_img.image_width,
                     height=self.og_img.image_height
                 )
@@ -318,7 +327,7 @@ class WCNode:
             variables['date'] = self.date_format
         
         if self.description:
-            variables['description'] = pages.mdown(self.description)
+            variables['description'] = self.description.html
         if self.banner:
             variables['banner'] = self.banner.vars
         if self.tree.navbar:
@@ -329,7 +338,7 @@ class WCNode:
                 entry = {
                     'url': c.url,
                     'title': c.title,
-                    'description': c.description,
+                    'description': c.description.html,
                     'thumb': c.thumb.vars,
                     
                 }

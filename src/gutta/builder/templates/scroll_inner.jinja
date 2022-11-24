@@ -13,7 +13,7 @@
 {% for pic in pix %}
     <div class="gutta-comic-page">
         <img 
-            loading="lazy" class="gutta-comic-page" 
+            loading="__GUTTA_LAZY_LOAD" class="gutta-comic-page" 
             src="{{assets}}{{pic.src}}" width="{{pic.width}}" height="{{pic.height}}"
             style="background: transparent url('{{assets}}{{spinner.src}}') center no-repeat;)"
             >

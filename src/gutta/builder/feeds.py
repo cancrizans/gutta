@@ -25,7 +25,7 @@ class Feed:
             fe.link(dict(href=permalink,rel='alternate'))
 
             pic = entry.feed_img
-            desc = f"<img src='{pic.absolute_url(self.webroot)}' width='{pic.image_width}' height='{pic.image_height}' alt='{entry.full_title}'></hr>{entry.description}"
+            desc = f"<img src='{pic.absolute_url(self.webroot)}' width='{pic.image_width}' height='{pic.image_height}' alt='{entry.full_title}'></hr>{entry.description.html}"
             fe.description(desc)
             fe.published(pytz.utc.localize(entry.date))
         

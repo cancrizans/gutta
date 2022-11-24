@@ -10,24 +10,39 @@ environment = jinja2.Environment(
     trim_blocks=True,
     lstrip_blocks=True
     )
-templates = {
-    'base':environment.get_template("base.jinja"),
-    'gallery':environment.get_template("gallery.jinja"),
-    'gallery_inner':environment.get_template("gallery_inner.jinja"),
-    'scroll':environment.get_template('scroll.jinja'),
-    'scroll_inner':environment.get_template('scroll_inner.jinja'),
-    'trickle_inner':environment.get_template('trickle_inner.jinja'),
-    'toc_inner':environment.get_template('toc_inner.jinja'),
-    'extra':environment.get_template('extra.jinja'),
-    'redirect':environment.get_template('redirect.jinja')
-}
 
-def mdown(src:str)->str:
-    return markdown.markdown(src)
+class Template:
+    def __init__(self, tname:str, full_page:bool):
+        self.tname = tname
+        self.full_page = full_page
+        self._template = environment.get_template(f"{tname}.jinja")
+
+    def render(self,options:dict)-> str:
+        rdr = self._template.render(options)
+        if self.full_page:
+            rdr = rdr.replace('__GUTTA_LAZY_LOAD','eager',1)
+            rdr = rdr.replace('__GUTTA_LAZY_LOAD','lazy')
+        return rdr
+
+templates_list = [
+    Template('base',True),
+    Template('gallery',True),
+    Template('gallery_inner',False),
+    Template('scroll',True),
+    Template('scroll_inner',False),
+    Template('trickle_inner',False),
+    Template('toc_inner',False),
+    Template('extra',True),
+    Template('redirect',True)
+]
+
+templates = {t.tname : t for t in templates_list}
+
 
 def render_page(template_name:str,options:dict):
     try:
         template = templates[template_name]
     except KeyError:
         raise TemplateNotFound
-    return template.render(options)
+    return template.render(options)    
+    

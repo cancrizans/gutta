@@ -73,7 +73,7 @@ class WCTree:
             # print(self.feed_entries_depth)
             # print(self.depth_node_map)
 
-            self.feed = Feed(self.feed_entries,self.webroot,{'title':self.webcomic_title,'description':self.root.description})
+            self.feed = Feed(self.feed_entries,self.webroot,{'title':self.webcomic_title,'description':self.root.description.plaintext})
 
         self.ganalytics = getopt(config,'google.analytics',False)
         if self.ganalytics:
