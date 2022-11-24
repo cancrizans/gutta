@@ -6,6 +6,8 @@ The following instructions are for tech-illiterate Windows users. Linux users sh
 
 Install **Python 3.10**. Go [here](https://www.python.org/downloads/release/python-3108/), select Windows installer, download and install.
 
+Important: make sure to toggle the option "add python to PATH". If you forget, you can just run the installation again with this option selected.
+
 ## Install git and git-bash
 
 Install **git for Windows** including **git-bash**.  Go [here](https://gitforwindows.org/), download and install.
