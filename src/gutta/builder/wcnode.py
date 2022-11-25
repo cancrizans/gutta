@@ -75,6 +75,8 @@ class WCNode:
             else:
                 raise BuildError(f"The root node's 'mount' field is '{self.do_mount}'. The root node must have mount:yes.")
 
+
+
         
         # Description and text
         self.description = Blob(getopt(config,'description',""))
@@ -130,6 +132,7 @@ class WCNode:
         # Navigation
         
         self.index_in_parent = index_in_parent
+        self.content_is_link = getopt(config,'content_is_link',False)
 
         # Date
         self.show_date = getopt(config,'show_date',False)
@@ -349,6 +352,7 @@ class WCNode:
                 
             
         if self.layout == 'scroll':
+            variables['content_is_link'] = self.content_is_link
             variables['pix'] = [pic.vars for pic in self.pix]
             variables['entries'] = [
                 

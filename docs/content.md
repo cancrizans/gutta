@@ -344,6 +344,12 @@ Image asset to be displayed as a banner above the navbar in this node's webpage.
 
 This node's children nodes.
 
+## content_is_key
+
+Values: `yes`, `no` (default `no`)
+
+If this node is `layout: scroll` then the images in `pix` become links to the next node in navigation. This is most useful for traditional one-webpage-per-comic-page comics. Note that this doesn't disable the pre-existing link at the bottom of the page.
+
 ## date
 
 Date for this node. You can write the date in really any format you want, it will be probably be parsed correctly. To ensure no ambiguities, prefer writing the month as a full word. The following examples all work correctly and parse to the fourth of May, 2019:
