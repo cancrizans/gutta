@@ -56,6 +56,16 @@ Open `style.scss`, and write the css overrides you desire for these classes (or 
 
 rebuild your website and these should now apply. Rinse and repeat.
 
+### Referencing assets in the stylesheets
+
+When you want to reference assets (like images) in `style.scss` using the `url()` function you'll need to refer to the assets folder as `../_assets/`. The reason is that these URLs are relative to the location of the final stylesheet built by gutta, which is going to be `static/wc.css` (not the webpage where the sheet is used!). So for example:
+
+```scss
+.some-element{
+    background-image: url("../_assets/my_bg.jpg");
+}
+```
+
 ## Everything in its right place.
 
 **Note**: do not place CSS overrides in `vars.scss`, and do not place gutta variables settings in `style.scss`, or things may not work as intended. This is what's going on behind the scenes when you build:
