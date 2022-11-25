@@ -116,21 +116,102 @@ Applied to the tree above, this hierarchy will make `root` a "comic", and `first
 
 *Note: since `root` is the one and only depth-0 node, specifying its properties directly under `root:` or in the first layer of the hierarchy is obviously equivalent. Just choose the way that makes your `webcomic.yaml` easier to read to you, both work.*
 
-## Structure of `webcomic.yaml`
+## Quickstart on `webcomic.yaml`
 
-`webcomic.yaml` is built like this:
+Open `webcomic.yaml` in your editor. The first thing we're gonna worry about is the overall layout of your website, which we will map in the `hierarchy:` option. Think about this long and hard - what is it that you want to see when you open the website? How do you want to read it?
+
+Let's say when I open the website I want to be able to choose from a list of chapters. When I click on a chapter, I immediately want to begin reading it from the first update to the last one, with each update comprising one or more pages. I don't want any interruption so I want the whole thing in infinite vertical scroll. At the end of the chapter I want a link to the next chapter, and so on.
+
+So my first deduction is that my hierarchy is `webcomic > chapter > update`. These will represent depth-0, depth-1 and depth-2 nodes respectively. The second one concerns the *layouts* to assign to these levels, namely how their webpages should be built like. We know `webcomic` must have a page with a set of links to its children chapters, so we say `layout: gallery`. Then, we want `chapter` to show its own children's content in vertical scroll, so we choose `layout: scroll`. But what about updates? We don't really want them to have their own webpage (you want to avoid presenting the same content twice as a general rule), but they should still be `layout: scroll` so that their content is just their comic pages pics stacked vertically, so that when updates are embedded into chapters everything comes together nicely. Thankfully we can disable the creation of a true page for updates using the `mount:` option (we'll see later in detail how). For now, we write our hierarchy using our level definitions in order:
+
+```yaml
+# somewhere in webcomic.yaml
+
+hierarchy:
+  webcomic:
+    layout: gallery
+  chapter:
+    layout: scroll
+  update:
+    layout: scroll
+    mount: redirect
+```
+
+What this is saying is, just to be pedantic:
+
+* The `root` node will be called a `webcomic`, and it will have the property `layout: gallery`
+* All children of the `root` node will be called `chapter`, and they will have the property `layout: scroll`
+* All grandchildren of `root` will be `update`, and they will have the property `layout: scroll` and `mount: redirect`
+
+you get it, right?
+
+So, what's with `mount`? Mounting a node is the act of actually reserving a location on the website (like `yourwebsite.com/the_location/`) called a mountpoint as the place where the user can actually find the webpage of that node. Mounting is handled completely automatically by gutta unless you want to intervene, except for the fact that you have to tell it whether to do it or not. 
+
+By default, all nodes are `mount: yes`, which means they all get a webpage somewhere - that can be undesirable sometimes, like in our case. If you set `mount: no` your node does not get mounted and links to it actually get converted to anchors in the parent page. While the lone node doesn't physically exist in the final website, it's still useful to you as a structure to lay out your webcomic (e.g. you can assign it a date, a title, description, etc...)
+
+You could do this, and this is *almost* perfect, but it has a tiny frustrating flaw: when you share links to your `updates` online, they're gonna be links to the parent chapter page + the anchor to the update, which means you're only ever gonna get the tags of the `chapter` - that means, say, the Discord or Twitter embeds are gonna be generic. It's also pretty bad for search engines, crawlers, analytics... `mount: redirect` is a good compromise. It actually does mount an update page, but the update's page is an immediate redirect to the location of the update on the chapter's page. So you seamlessly have the same experience as if it was unmounted, but all the benefits of there being a genuine location on the website dedicated to that `update`.
+
+This was all just an example! You need to think about how you want your site to be like, and then translate it into a `hierarchy`.
+
+When we're done with `hierarchy:`, we can now add a few more generic options for the website (main webcomic options). We can lay these out in any order we want. So you have
+
+```yaml
+hierarchy:
+  # the whole hierarchy here...
+  ...
+
+
+title: Muh Comic
+favicon: icon.png
+...
+```
+
+See below for reference on all the available main webcomic options. They're pretty easy.
+
+Finally, the last thing you need to have necessarily is the `root:` option, which specifies the root node and all its children, and so essentially contains the entirety of your comic's content, using the tree format we described before.
+
+So in the end you get this whole structure for your file:
 
 ```yaml
 hierarchy:
   ...
 
-# other main webcomic options...
+# main options here...
+
+
+root:
+  # root's node options
+  ...
+  children:
+    chap1:
+      #chap1's node options
+      ...
+    chap2:
+      ...
+```
+
+For each node, per-node options are picked from both what you insert here in the tree under `root`, and also from the corresponding layer in `hierarchy`, with priority on the former. For example, if I write for a chapter:
+
+```yaml
+hierarchy:
+  webcomic:
+    layout: gallery
+  chapter:
+    layout: scroll
+  update:
+    layout: scroll
+    mount: redirect
 
 root:
   ...
+  children:
+    chap1:
+      layout: gallery
 ```
 
-You can order options however you like actually.
+Since `chap1` is the child of `root`, it is depth 1 and thus it is a `chapter`, so according to the `hierarchy` it should have `layout: scroll`. However, my manual specification of `layout: gallery` under `chap1:` takes precedence, so this particular chapter will actually have scroll layout. This is pretty comfortable if you want to handle the occasional special case in an otherwise large and regular webcomic.
+
+In fact, literally *all* per-node properties can be specified in either hierarchy or the tree, with priority to the tree specification, though only some of them are convenient to have in the hierarchy (for example, placing `title:` in the hierarchy is not very useful...)
 
 # Options
 
