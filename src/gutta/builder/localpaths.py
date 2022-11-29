@@ -9,3 +9,7 @@ def assetpath(p:str)->os.path:
 STATIC = "static"
 def staticpath(p:str)->os.path:
     return posixpath.join(STATIC,p)
+
+DEBUG = ".debug"
+def debugpath(p:str)->os.path:
+    return posixpath.join(DEBUG,p)

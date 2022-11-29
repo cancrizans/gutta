@@ -3,6 +3,26 @@ import click
 import os
 from distutils.dir_util import copy_tree
 import pathlib
+import json
+from . import localpaths
+import errno, os, stat, shutil
+
+def handleRemoveReadonly(func, path, exc):
+  excvalue = exc[1]
+  if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+      os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
+      func(path)
+  else:
+      raise
+
+def rmdir(directory):
+    directory = pathlib.Path(directory)
+    for item in directory.iterdir():
+        if item.is_dir():
+            rmdir(item)
+        else:
+            item.unlink()
+    directory.rmdir()
 
 
 
@@ -30,9 +50,29 @@ def create_website():
 
 def clean_website():
     if pathlib.Path('_source/webcomic.yaml').is_file():
-        for item in os.listdir(os.getcwd()):
-            if not item.startswith("_"):
-                print(f"Delete {item}")
+        # for item in os.listdir(os.getcwd()):
+        #     if not item.startswith("_"):
+        #         print(f"Delete {item}")
+        try:
+            dalist = json.load(open(localpaths.debugpath('buildlist.json'),'r'))
+        except FileNotFoundError:
+            click.echo("No buildlist.json file found... looks like you'll have to clean by hand.")
+            return
+        for item in dalist:
+            print(f"Delete {item}")
+            path = pathlib.Path(item)
+            if path.is_dir():
+                shutil.rmtree(item,ignore_errors=False,onerror=handleRemoveReadonly)
+            elif path.is_file():
+                os.remove(path)
+            else:
+                pass
+            # if path.is_dir():
+            #     rmdir(path)
+            # elif path.is_file():
+            #     path.unlink()
+            # else:
+            #     click.echo("???")
 
         click.echo("Done!")
     else:

@@ -142,12 +142,37 @@ class WCTree:
 
 
     def dump_debug(self):
+        pathlib.Path(localpaths.DEBUG).mkdir(exist_ok=True)
+        
         debugs = {}
         for node in self.all_nodes:
             debugs[node.npath] = node.variables
-        with open('.debug_variables.json','w') as f:
+        with open(localpaths.debugpath('variables.json'),'w') as f:
             f.write(json.dumps(debugs)) 
 
+        mounts = []
+        for node in self.all_nodes:
+            if not node.do_mount:
+                mountkind = f"(unmounted)"
+            elif node.do_mount == 'redirect':
+                mountkind = f"-> {node.url} >>> {node.unmounted_url}"
+            else:
+                mountkind = f"-> {node.url}"
+            mounts.append(f"{node.npath} {mountkind}")
+            
+        with open(localpaths.debugpath('mounts.txt'),'w') as f:
+            f.write("\n".join(mounts))
+
+        with open(localpaths.debugpath('buildlist.json'),'w') as f:
+            dalist = self.all_mountpoints()
+            dalist += [".debug","static","index.html","rss.xml","atom.xml"]
+            for page in self.extra_pages:
+                dalist.append(page.name+'.html')
+            json.dump(dalist,f)
+
+    def all_mountpoints(self)->list[str]:
+        return [node.url for node in self.all_nodes if node.do_mount and node.url ]
+    
 
     def build(self):
         pathlib.Path('.nojekyll').touch()
