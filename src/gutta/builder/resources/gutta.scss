@@ -1,10 +1,18 @@
+@use "sass:math";
+
 @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css");
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
+
+// == Variable Definitions == 
+
+// Sizing
 
 $site-max-width: 940px !default;
 $extra-page-max-width: 700px !default;
 
 $sidebox-width: 300px !default;
+
+// Colours
 
 $color-bg: rgb(226, 224, 217) !default;
 $color-fg: #222 !default;
@@ -13,18 +21,28 @@ $color-accent: #1effa4 !default;
 $color-links: #01a8a0 !default;
 $color-links-hover: $color-accent !default;
 
+$color-galleryentry-bg: rgb(173, 171, 162) !default;
+$color-scrollcontent-bg: transparent !default;
+
+$color-navlinks: $color-links !default;
+$color-navlinks-hover: $color-links-hover !default;
+
+// Fonts
+
 $font-main: sans-serif !default;
 $font-weight-main: normal !default;
 
 $font-text: sans-serif !default;
 $font-weight-text: normal !default;
 
-$color-navlinks: $color-links !default;
-$color-navlinks-hover: $color-links-hover !default;
+// Layout Constants
 
-$color-galleryentry-bg: rgb(173, 171, 162) !default;
+$gallery-columns-xs: 1 !default;
+$gallery-columns-sm: 2 !default;
+$gallery-columns-md: 3 !default;
 
-$color-scrollcontent-bg: transparent !default;
+
+// == (end of variable definitions) ==
 
 body {
     background-color: $color-bg;
@@ -156,4 +174,17 @@ a:hover {
 .gutta-scroll-content-container{
     width: 100%;
     background-color: $color-scrollcontent-bg;
+}
+
+.gallery > * {
+    flex: 0 0 auto;
+    width: (100% / $gallery-columns-xs);
+
+    @media (min-width: 576px){
+        width: (100% / $gallery-columns-sm);
+    }
+
+    @media (min-width: 768px){
+        width: (100% / $gallery-columns-md);
+    }
 }

@@ -40,6 +40,9 @@ This is the list of all currently supported variables:
 | `$font-weight-main` | weight (normal/bold/etc...) of main font|
 | `$font-text` | text font (used for paragraphs and descriptions) |
 | `$font-weight-text` | weight (normal/bold/etc...) of text font|
+| `$gallery-columns-xs` | number of columns in gallery layout on screens narrower than 576px |
+| `$gallery-columns-sm` | number of columns in gallery layout on screens with with inbetween 576px and 768px |
+| `$gallery-columns-md` | number of columns in gallery layout on screens wider than 768px |
 
 ## Advanced Styling
 
