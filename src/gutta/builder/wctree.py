@@ -123,6 +123,9 @@ class WCTree:
         elif address.startswith("extras."):
             _,param = address.split('.',maxsplit=1)
             return param+".html"
+        elif address.startswith("href."):
+            _,param = address.split('.',maxsplit=1)
+            return param
         else:
             return address
 
