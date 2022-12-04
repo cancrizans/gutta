@@ -78,6 +78,10 @@ class WCTree:
         self.ganalytics = getopt(config,'google.analytics',False)
         if self.ganalytics:
             self.ganalytics_id = getopt(self.ganalytics,'tracking_id')
+
+        self.cactus = getopt(config,'cactus',False)
+        if self.cactus:
+            self.cactus_site_name = getopt(self.cactus,'site_name')
         
 
     @lru_cache

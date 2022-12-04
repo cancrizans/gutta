@@ -283,6 +283,14 @@ You can verify the list of mountpoints assigned by gutta by looking at the autog
 
 # Main webcomic options
 
+## cactus
+
+Defines the use of [Cactus Comments](https://cactus.chat) as a framework to manage comment sections. To use cactus, you'll need to make a Matrix account and register your website (follow the instructions there).
+
+| Sub-option | Required | Description |
+| --- | --- | --- |
+| `website_name` | yes | The website name with which you registered your site on cactus |
+
 ## extras
 
 Example
@@ -412,7 +420,15 @@ Image asset to be displayed as a banner above the navbar in this node's webpage.
 
 This node's children nodes.
 
-## content_is_key
+## comments
+
+Values: `yes`, `no` (default `no`)
+
+Whether to show a comment section in this node's page. Note that each node will have its own, separate comment section.
+
+This option requires a comment section framework, like cactus, to be set up globally for the site.
+
+## content_is_link
 
 Values: `yes`, `no` (default `no`)
 

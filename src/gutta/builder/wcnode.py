@@ -89,6 +89,12 @@ class WCNode:
         self.list_in_toc = getopt(config,'list_in_toc',True)
         self.infobox = getopt(config,'infobox',False)
 
+        # Comments
+
+        self.comments = getopt(config,'comments',False)
+        if self.comments:
+            self.cactus_id = self.npath.replace('_','..')
+
         # Images
 
         pix = assets.parse_pixstring(getopt(config,'pix',""))
@@ -147,6 +153,8 @@ class WCNode:
                     "instead and the date range will be propagated upwards."))
 
         self.date : datetime.datetime = None # will be parsed/interpolated later.
+
+
 
 
         # Opengraph backflow
@@ -312,6 +320,14 @@ class WCNode:
         }
         if self.tree.ganalytics:
             variables['ganalytics'] = self.tree.ganalytics
+        if self.comments:
+            if self.tree.cactus:
+                variables['cactus'] = dict(
+                    section_id = self.cactus_id,
+                    site_name = self.tree.cactus_site_name
+                )
+            else:
+                raise BuildError("Node marked to show comments, but no comments framework defined.")
 
         if self.do_mount:
             variables['opengraph'] = dict(

@@ -2,7 +2,11 @@
 
 {% block header %}
     <link rel="stylesheet" href="{{static}}wc.css">
-     <link rel="icon" type="image/gif" href="{{assets}}{{favicon.src}}">      
+    <link rel="icon" type="image/gif" href="{{assets}}{{favicon.src}}">      
+    {%if cactus is defined %}
+        <script type="text/javascript" src="https://latest.cactus.chat/cactus.js"></script>
+        <link rel="stylesheet" href="https://latest.cactus.chat/style.css" type="text/css">
+    {%endif%}
 {% endblock %}
 
 {% block boddy %}
@@ -33,8 +37,25 @@
         {% endif %}
         {{body}}
 
+        {%-if cactus is defined-%}
+            <div id="comment-section"></div>
+        {%-endif-%}
+        <div class="gutta-scrollbuffer"></div>
+
         <div class="gutta-acknowledgement text-muted">
             <a href="https://github.com/cancrizans/gutta"><img src="{{static}}gutta_logo24.png"> made with gutta version {{gutta.version}}</a>
         </div>
     </div>
+
+    {%-if cactus is defined-%}
+        <script>
+            initComments({
+                node: document.getElementById("comment-section"),
+                defaultHomeserverUrl: "https://matrix.cactus.chat:8448",
+                serverName: "cactus.chat",
+                siteName: "{{cactus.site_name}}",
+                commentSectionId: "{{cactus.section_id}}"
+            })
+        </script>
+    {%-endif-%}
 {% endblock %}
