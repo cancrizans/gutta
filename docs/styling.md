@@ -25,8 +25,13 @@ $font-main: 'Lato', sans-serif;
 
 This is the list of all currently supported variables:
 
-| Variable | Effect |
+| | |
 | -- | -- |
+| **Sizes** | |
+| `$sidebox-width` | width of the infoboxes on the side in scroll mode
+| `$site-max-width` | width of the main website column (will fit if screen is narrower) |
+| `$extra-page-max-width` | width of the content of an extra page (will fit if screen is narrower) |
+| **Colors** | |
 | `$color-accent` | default colour of text |
 | `$color-bg` | background colour of the webpage |
 | `$color-fg` | default colour of text |
@@ -36,13 +41,20 @@ This is the list of all currently supported variables:
 | `$color-navlinks` | colour of navbar links |
 | `$color-navlinks-hover` | colour of navbar links when hovered on |
 | `$color-scrollcontent-bg` | background colour of content of scroll pages - this colour is displayed under a comic image while it's loading. |
+| **Fonts** | |
 | `$font-main` | primary font (used for navbar and titles) |
 | `$font-weight-main` | weight (normal/bold/etc...) of main font|
 | `$font-text` | text font (used for paragraphs and descriptions) |
 | `$font-weight-text` | weight (normal/bold/etc...) of text font|
+| **Layout** | |
 | `$gallery-columns-xs` | number of columns in gallery layout on screens narrower than 576px |
-| `$gallery-columns-sm` | number of columns in gallery layout on screens with with inbetween 576px and 768px |
+| `$gallery-columns-sm` | number of columns in gallery layout on screens with width between 576px and 768px |
 | `$gallery-columns-md` | number of columns in gallery layout on screens wider than 768px |
+
+
+
+
+
 
 ## Advanced Styling
 
