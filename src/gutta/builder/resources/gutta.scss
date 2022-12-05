@@ -9,7 +9,7 @@
 
 $site-max-width: 940px !default;
 $extra-page-max-width: 700px !default;
-
+$root-font-size: 16px !default;
 $sidebox-width: 300px !default;
 
 // Colours
@@ -35,14 +35,26 @@ $font-weight-main: normal !default;
 $font-text: sans-serif !default;
 $font-weight-text: normal !default;
 
+
 // Layout Constants
 
 $gallery-columns-xs: 1 !default;
 $gallery-columns-sm: 2 !default;
 $gallery-columns-md: 3 !default;
+$gallery-columns-lg: 3 !default;
 
 
 // == (end of variable definitions) ==
+
+@mixin gutta-text {
+    font-family: $font-text;
+    font-weight: $font-weight-text;
+}
+
+
+html {
+    font-size: $root-font-size;
+}
 
 body {
     background-color: $color-bg;
@@ -107,10 +119,9 @@ a:hover {
 }
 
 .gutta-paragraph{
-    font-family: $font-text;
-    font-weight: $font-weight-text;
+    @include gutta-text;
     margin: 10px;
-    font-size: 1.2em;
+    font-size: 1.2rem;
     padding: 1em 4em 1em 4em;
     text-align: center;
 }
@@ -118,9 +129,10 @@ a:hover {
 .gutta-title{
     font-family: $font-main;
     font-weight: $font-weight-main;
-    margin: 10px;
-    padding: 1em 4em 1em 4em;
+    margin: 10px 0px 10px 0px;
+    padding: 1em 10% 1em 10%;
     text-align: center;
+    width: 100%;
 }
 
 .gutta-toc{
@@ -151,6 +163,10 @@ a:hover {
     border-top: dashed;
 }
 
+.gutta-sidebox-description{
+    @include gutta-text;
+}
+
 .gutta-acknowledgement{
     padding-top: 3em;
     padding-bottom: 3em;
@@ -164,6 +180,10 @@ a:hover {
     padding-right: 1em;
 
     max-width: $extra-page-max-width;
+}
+
+.gutta-extra > p {
+    @include gutta-text;
 }
 
 .gutta-scroll-subpage{
@@ -187,4 +207,12 @@ a:hover {
     @media (min-width: 768px){
         width: (100% / $gallery-columns-md);
     }
+
+    @media (min-width: 992px){
+        width: (100% / $gallery-columns-lg);
+    }
+}
+
+.gutta-gallery-description {
+    @include gutta-text;
 }

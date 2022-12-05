@@ -49,7 +49,8 @@ This is the list of all currently supported variables:
 | **Layout** | |
 | `$gallery-columns-xs` | number of columns in gallery layout on screens narrower than 576px |
 | `$gallery-columns-sm` | number of columns in gallery layout on screens with width between 576px and 768px |
-| `$gallery-columns-md` | number of columns in gallery layout on screens wider than 768px |
+| `$gallery-columns-md` | number of columns in gallery layout on screens with width between 768px and 992px |
+| `$gallery-columns-lg` | number of columns in gallery layout on screens wider than 992px |
 
 
 
