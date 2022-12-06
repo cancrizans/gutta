@@ -10,7 +10,7 @@ from .specs import read_yaml,getopt
 from .feeds import Feed
 from .exceptions import UnknownHierarchyLevel
 from .mountpoints import MountDepot
-
+from .blobs import Blob
 
 
 class HierarchyLevel:
@@ -82,6 +82,15 @@ class WCTree:
         self.cactus = getopt(config,'cactus',False)
         if self.cactus:
             self.cactus_site_name = getopt(self.cactus,'site_name')
+
+        self.labels : dict[str,Blob] = {}
+        labels = getopt(config,'labels',{})
+        for label_key, default in [
+                ('goto_next','Continue reading: {{next.full_title}}'),
+                ('end',"You've reached the end of this Webcomic - stay tuned for the next episode! [Back Home]({{sroot}})"),
+                ('goto_back', "Go back to {{previous.full_title}}")
+            ]:
+            self.labels[label_key] = Blob(getopt(labels,label_key,default))
         
 
     @lru_cache

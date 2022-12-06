@@ -316,7 +316,7 @@ class WCNode:
             'head_title':' - '.join([ x for x in [self.tree.webcomic_title,self.full_title] if x]),
             'favicon':self.tree.favicon.vars,
             'permalink': self.permalink(self.tree.webroot),
-            
+            'labels':{}
         }
         if self.tree.ganalytics:
             variables['ganalytics'] = self.tree.ganalytics
@@ -382,30 +382,62 @@ class WCNode:
             variables['infobox'] = self.infobox
             variables['spinner'] = self.tree.spinner.vars
             
+            
             next = self.next_node
             if next == 'latest':
                 variables['is_latest'] = True
+                variables['labels']['end'] = self.compile_label('end')
             else:
-                variables['navigation_destination'] = {
+                variables['next'] = {
                     'url': next.url,
                     'title': next.title,
                     'full_title':next.full_title
                 }
+                variables['labels']['goto_next'] = self.compile_label('goto_next')
 
             prev = self.previous_node
             if prev == 'first':
                 variables['is_first'] = True
             else:
-                variables['back_destination'] = {
+                variables['previous'] = {
                     'url': prev.url,
                     'title': prev.title,
                     'full_title':prev.full_title
                 }
+                variables['labels']['goto_back'] = self.compile_label('goto_back')
 
         # if self.level == 2:
         #     print(f"==={self.nid}===")
         #     print(variables)
         return variables
+
+    @lru_cache
+    def compile_label(self,key:str)->str:
+        return self.contextualize_blob(self.tree.labels[key]).html
+
+    @cached_property
+    def blob_context(self)->dict[str,str]:
+        ctx = {
+            'full_title':self.full_title,
+            'title':self.title,    
+            'assets':self.assets_path,
+            'sroot':self.siteroot,
+            'static':self.static_path,
+        }
+        if self.next_node != "latest":
+            ctx['next.title'] = self.next_node.title
+            ctx['next.full_title'] = self.next_node.full_title
+        if self.previous_node != "first":
+            ctx['previous.title'] = self.previous_node.title
+            ctx['previous.full_title'] = self.previous_node.full_title
+
+        return ctx
+
+    @lru_cache
+    def contextualize_blob(self, blob:Blob)->Blob:
+        return blob.contextualize(self.blob_context)
+
+
 
 
     @cached_property

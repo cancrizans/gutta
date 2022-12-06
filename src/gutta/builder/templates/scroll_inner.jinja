@@ -14,15 +14,15 @@
 
 {% for pic in pix %}
     <div class="gutta-comic-page">
-        {%if content_is_link and (navigation_destination is defined)%}
-            <a href="{{sroot}}{{navigation_destination.url}}">
+        {%if content_is_link and (next is defined)%}
+            <a href="{{sroot}}{{next.url}}">
         {%endif%}
         <img 
             loading="__GUTTA_LAZY_LOAD" class="gutta-comic-page" 
             src="{{assets}}{{pic.src}}" width="{{pic.width}}" height="{{pic.height}}"
             style="background: transparent url('{{assets}}{{spinner.src}}') center no-repeat;"
             >
-        {%if content_is_link and (navigation_destination is defined)%}
+        {%if content_is_link and (next is defined)%}
             </a>
         {%endif%}
         

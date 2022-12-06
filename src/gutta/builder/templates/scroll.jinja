@@ -1,17 +1,17 @@
 <div class="gutta-scroll-subpage">
-    {%if back_destination is defined %}
+    {%if previous is defined %}
     <div class="gutta-previous d-flex flex-column align-items-center justify-content-center">
-            <span><a href="{{sroot}}{{back_destination.url}}">Go back to {{back_destination.full_title}}</a></span>
+            <span><a href="{{sroot}}{{previous.url}}">{{labels.goto_back}}</a></span>
     </div>
     {% endif %}
     <div class="gutta-scroll-content-container">
        {{innerbody}}
     </div>
     <div class="gutta-next d-flex flex-column align-items-center justify-content-center">
-        {%-if navigation_destination is defined -%}
-            <h3><a href="{{sroot}}{{navigation_destination.url}}">Continue reading: {{navigation_destination.full_title}}</a></h3>
+        {%-if next is defined -%}
+            <h3><a href="{{sroot}}{{next.url}}">{{labels.goto_next}}</a></h3>
         {%else%}
-            <h3>You've reached the end of this webcomic - stay tuned for the next episode! <a href="{{sroot}}"> Back Home</a></h3>
+            <h3>{{labels.end}}</h3>
         {% endif %}
     </div>
 
