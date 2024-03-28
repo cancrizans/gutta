@@ -23,7 +23,8 @@ dependencies = [
     "numpy",
     "python-dateutil",
     "feedgen",
-    "pytz"
+    "pytz",
+    "watchfiles"
 ]
 
 dynamic = ["version"]

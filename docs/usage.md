@@ -58,7 +58,7 @@ Inside the `_assets` folder is where you will locate images (comic pages, banner
 
 But before changing anything, let's try out serving your template webcomic first.
 
-## Serving Webcomic
+## Serving a Webcomic
 
 Open `git-bash` in your `mywebsite` directory. (Remember, always in `mywebsite`, never anywhere else, not in `_source`, not in the parent directory of `mywebsite`, not in My Documents, **specifically in `mywebsite`**.)
 
@@ -78,9 +78,9 @@ gutta go
 
 `gutta go` first builds your webcomic, but then also *serves* it, which means it starts a local webserver that lets you try out your website as if it was really online. The command will suggest you go to the address `http://127.0.0.1:8069/`, so just open your internet browser (Firefox, Chrome, Edge...) and paste in `http://127.0.0.1:8069/` in the address bar. Your fresh new website will pop up!
 
-When you are tired, or you've made some modifications to your website (again, **in the `_source` or `_assets` folders only**), you will need to switch off the webserver, so go to the console and press `Ctrl+C`. This stops the webserver and returns you the prompt.
+When you are tired, you will need to switch off the webserver, so go to the console and press `Ctrl+C`. This stops the webserver and returns you the prompt.
 
-You can then press the up arrow once to recover the `gutta go` command, or retype it, and press enter to re-build the website with the changes and restart the webserver. Go to the browser to see your new changes. 
+Whenever you make some modifications to your website **in the `_source` folder**, gutta will detect the changes and rebuild your webcomic automatically, after which you should be able to see your changes by refreshing your browser. When you make modifications in the `_assets` folder, a rebuild is not necessary.
 
 And that's it! All you need to do to make your website is add some content, stop and restart `gutta go`, check in your web browser, and then rinse and repeat until it's perfect.
 
