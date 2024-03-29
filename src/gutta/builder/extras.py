@@ -24,7 +24,13 @@ class ExtraPage:
             except FileNotFoundError:
                 raise MissingSpecFile(frompath)
             
-            return Blob(source).html
+            context = dict(
+                sroot="../",
+                assets='../_assets/',
+                title=self.name
+            )
+
+            return Blob(source).contextualize(context).html
         elif self.layout == "toc":
             return pages.render_page("toc_inner",{'toc':[self.reference_node._toc_subtree]})
         else:
