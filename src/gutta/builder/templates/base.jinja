@@ -12,7 +12,7 @@
 {% block boddy %}
     <div class="container d-flex flex-column align-items-center gutta-body">
         {% if banner is defined %}
-            <img src="{{assets}}{{banner.src}}" width="100%">
+            <img class="gutta-banner" src="{{assets}}{{banner.src}}" width="100%">
         {% endif %}
         {% if navbar is defined %}
             <nav class="navbar navbar-expand-md sticky-top d-flex flex-row justify-content-around gutta-navbar">

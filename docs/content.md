@@ -520,6 +520,14 @@ Prefix that is prepended to all image asset path (`pix`, `thumb`, `og.img`, ...)
 
 Note on inheritance: `prefix` is inherited automatically from a node's parent. So if you set a prefix for, say, a chapter node, each subnode will also automatically respect that prefix, unless it manually specifies its own different value for `prefix`.
 
+## short_title
+
+The title for this node used in the hierarchical node names, such as in the table of content or in HTML page titles.
+
+By default the value of `title` is used. 
+
+If set to empty (`short_title: ""`) the node will not appear at all in hierarchical names.
+
 ## show_date
 
 Values: `yes`, `no`
