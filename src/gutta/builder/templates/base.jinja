@@ -22,7 +22,7 @@
                     </a> #}
                         {% for entry in navbar.entries %}
                             <div class="nav-item gutta-navitem">
-                                <a class="nav-link gutta-navlink" href="{{sroot}}{{entry.dest}}">{{entry.label}}</a>
+                                <a class="nav-link gutta-navlink" id="gutta-navlink-{{entry.label}}" href="{{sroot}}{{entry.dest}}">{{entry.label}}</a>
                             </div>
                         {% endfor %}
             </nav>
@@ -30,11 +30,13 @@
         {% if show_title %}
             <h1 class="gutta-title">{{full_title}}</h1>
         {% endif %}
-        {% if description is defined %}
-        <div class="gutta-description gutta-paragraph">
-            {{description}}
-        </div>
-        {% endif %}
+        {% if show_description %}
+            {% if description is defined %}
+            <div class="gutta-description gutta-paragraph">
+                {{description}}
+            </div>
+            {% endif %}
+        {%endif%}
         {{body}}
 
         {%-if cactus is defined-%}

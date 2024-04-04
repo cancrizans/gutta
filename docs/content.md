@@ -534,6 +534,12 @@ Values: `yes`, `no`
 
 whether to display the date for this node in gallery and scroll modes.
 
+## show_description
+
+Values: `yes`, `no` (default `no`)
+
+whether to display the description as a paragraph beneath the title of this node's own webpage, if it has one. Note this does not affect the presence of the description in infoboxes or gallery entries.
+
 ## show_title
 
 Whether to display the node's title as a header within the webpage right under the navbar and before the body.

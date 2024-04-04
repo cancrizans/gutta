@@ -86,6 +86,7 @@ class WCNode:
             self.banner = assets.ImageAsset.get(banner_path)
 
         self.show_title = getopt(config,'show_title',True)
+        self.show_description = getopt(config,'show_description',True)
         self.list_in_toc = getopt(config,'list_in_toc',True)
         self.infobox = getopt(config,'infobox',False)
 
@@ -312,6 +313,7 @@ class WCNode:
             'static':self.static_path,
             'full_title':self.full_title,
             'show_title':self.show_title,
+            'show_description':self.show_description,
             'thumb':self.thumb.vars,
             'head_title':' - '.join([ x for x in [self.tree.webcomic_title,self.full_title] if x]),
             'favicon':self.tree.favicon.vars,
