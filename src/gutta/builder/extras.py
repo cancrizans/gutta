@@ -25,8 +25,8 @@ class ExtraPage:
                 raise MissingSpecFile(frompath)
             
             context = dict(
-                sroot="../",
-                assets='../_assets/',
+                sroot="",
+                assets='_assets/',
                 title=self.name
             )
 
