@@ -1,6 +1,5 @@
 import http.server
 import socketserver
-from watchgod import awatch
 
 
 def run_webserver():
