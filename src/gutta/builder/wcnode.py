@@ -12,6 +12,7 @@ from .specs import getopt
 import datetime
 from . import gutta_info
 from .blobs import Blob
+from .dates import parse_date
 
 import traceback
 
@@ -154,7 +155,8 @@ class WCNode:
                     "instead and the date range will be propagated upwards."))
 
         self.date : datetime.datetime = None # will be parsed/interpolated later.
-
+        redraw_date_str : str | None = getopt(config,'redraw',"")
+        self.redraw_date : datetime.datetime | None = parse_date(redraw_date_str)
 
 
 
@@ -301,6 +303,11 @@ class WCNode:
             else:
                 return f"{lowfmt} - {highfmt}"
 
+    @cached_property
+    def redraw_date_format(self)->str:
+        if self.redraw_date:
+            return self.redraw_date.strftime('%d %B, %Y')
+        return ""
 
 
     @cached_property
@@ -346,6 +353,8 @@ class WCNode:
 
         if self.show_date:
             variables['date'] = self.date_format
+        if self.redraw_date_format:
+            variables['redraw_date'] = self.redraw_date_format
         
         if self.description:
             variables['description'] = self.description.html

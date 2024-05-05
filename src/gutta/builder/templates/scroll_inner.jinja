@@ -2,9 +2,14 @@
     <div class="gutta-sidebox-container d-none d-lg-block">
         <div class="gutta-sidebox">
             <h5>{{title}}</h5>
-            <span class="text-secondary">{%-if date is defined-%}{{date}}{%-endif-%}
+            <span class="text-secondary">
+                {%-if date is defined-%}{{date}}{%-endif-%}
+                
                 <a href="{{permalink}}"><i class="bi-link-45deg"></i></a>
             </span>
+            {%-if redraw_date is defined-%}
+                <span class="text-secondary gutta-redrawn">(Redrawn on {{redraw_date}})</span>
+            {%-endif-%}
             <div class="gutta-sidebox-description">
                 <p>{{description}}</p>
             </div>

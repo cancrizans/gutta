@@ -520,6 +520,10 @@ Prefix that is prepended to all image asset path (`pix`, `thumb`, `og.img`, ...)
 
 Note on inheritance: `prefix` is inherited automatically from a node's parent. So if you set a prefix for, say, a chapter node, each subnode will also automatically respect that prefix, unless it manually specifies its own different value for `prefix`.
 
+## redraw
+
+Date on which the content node was redrawn -- useful for when you revisit older segments of your webcomic but you don't want to mess with the original incremental dating. If this variable is set, the node's infobox will display a message "(Redrawn on ...)" after the actual original date.
+
 ## short_title
 
 The title for this node used in the hierarchical node names, such as in the table of content or in HTML page titles.
