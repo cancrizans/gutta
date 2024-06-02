@@ -22,7 +22,9 @@
                     </a> #}
                         {% for entry in navbar.entries %}
                             <div class="nav-item gutta-navitem">
-                                <a class="nav-link gutta-navlink" id="gutta-navlink-{{entry.label}}" href="{{sroot}}{{entry.dest}}">{{entry.label}}</a>
+                                <a class="nav-link gutta-navlink" id="gutta-navlink-{{entry.label}}" 
+                                    href="{% if entry.dest.url is defined %}{{entry.dest.url}}{% else %}{{sroot}}{{entry.dest.path}}{% endif %}"
+                                    >{{entry.label}}</a>
                             </div>
                         {% endfor %}
             </nav>

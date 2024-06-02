@@ -11,6 +11,7 @@ from .feeds import Feed
 from .exceptions import UnknownHierarchyLevel
 from .mountpoints import MountDepot
 from .blobs import Blob
+from .addresses import Address,AbsoluteAddress,RelativeAddress
 
 
 class HierarchyLevel:
@@ -52,7 +53,7 @@ class WCTree:
                 'brand_text': getopt(navbar_spec,'brand_text',"")
             }
             self.navbar['entries'] = [
-                {'label':entry_label,'dest':self.parse_address(entry_dest)}
+                {'label':entry_label,'dest':self.parse_address(entry_dest).to_dict()}
                 for entry_label, entry_dest in getopt(navbar_spec,'menu',{}).items()
                 ]
 
@@ -118,29 +119,29 @@ class WCTree:
         return depth_node_map
         
         
-    def parse_address(self,address:str)-> str:
+    def parse_address(self,address:str)-> Address:
         address = address.strip()
         if address.startswith('gutta.'):
             _, param = address.split('.',maxsplit=1)
             try:
                 return {
-                    'home':'index.html',
-                    'first':self.first.url,
-                    'latest':self.latest.url,
-                    'rss':'rss.xml',
-                    'atom':'atom.xml'
+                    'home':RelativeAddress('index.html'),
+                    'first':RelativeAddress(self.first.url),
+                    'latest':RelativeAddress(self.latest.url),
+                    'rss':RelativeAddress('rss.xml'),
+                    'atom':RelativeAddress('atom.xml')
                 }[param]
             except KeyError:
                 print(f"I don't know what to make of '{address}'...")
                 return "404.html"
         elif address.startswith("extras."):
             _,param = address.split('.',maxsplit=1)
-            return param+".html"
+            return RelativeAddress(param+".html")
         elif address.startswith("href."):
             _,param = address.split('.',maxsplit=1)
-            return param
+            return AbsoluteAddress(param)
         else:
-            return address
+            return RelativeAddress(address)
 
     def build_style(self):
         style_gutta = resources.read_resource('gutta.scss')
